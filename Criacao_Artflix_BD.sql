@@ -34,7 +34,7 @@ CREATE TABLE `ppgcd_artflix_db`.`assinante` (
   `cod_assinante` INT NOT NULL AUTO_INCREMENT,
   `nome_completo` VARCHAR(128) NOT NULL,
   `cpf_hash` CHAR(128) NOT NULL,     
-  `email_hash` CHAR(128) NOT NULL,   
+  `email` CHAR(128) NOT NULL,   
   `senha_hash` CHAR(128) NOT NULL,   
   `salt` CHAR(32) NOT NULL,          
   `telefone` VARCHAR(20) NOT NULL,
@@ -49,7 +49,7 @@ CREATE TABLE `ppgcd_artflix_db`.`assinante` (
     PRIMARY KEY (`cod_assinante`),
   UNIQUE INDEX `cod_assinante_UNIQUE` (`cod_assinante` ASC) VISIBLE,
   UNIQUE INDEX `cpf_hash_UNIQUE` (`cpf_hash` ASC) VISIBLE,
-  UNIQUE INDEX `email_hash_UNIQUE` (`email_hash` ASC) VISIBLE,
+  UNIQUE INDEX `email_UNIQUE` (`email` ASC) VISIBLE,
   CONSTRAINT `fk_assinante_endereco`
     FOREIGN KEY (`cod_endereco`) REFERENCES `endereco` (`cod_endereco`)
     ON DELETE RESTRICT ON UPDATE CASCADE
