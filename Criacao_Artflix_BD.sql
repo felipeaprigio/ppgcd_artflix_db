@@ -13,7 +13,6 @@ CREATE TABLE `ppgcd_artflix_db`.`pais` (
   `moeda_padrao` CHAR(3) NOT NULL,
   `idioma_padrao` VARCHAR(20) NOT NULL,
    PRIMARY KEY (`cod_pais`),
-   UNIQUE INDEX `cod_pais_UNIQUE` (`cod_pais` ASC) VISIBLE,
    UNIQUE INDEX `sigla_iso_UNIQUE` (`sigla_iso` ASC) VISIBLE);
 
 CREATE TABLE `ppgcd_artflix_db`.`endereco` (
@@ -23,9 +22,10 @@ CREATE TABLE `ppgcd_artflix_db`.`endereco` (
   `cidade` VARCHAR(30) NOT NULL,
   `bairro` VARCHAR(40) NOT NULL,
   `logradouro` VARCHAR(60) NOT NULL,
+  `numero` VARCHAR(10) NOT NULL,
+  `complemento` VARCHAR(30) NULL,
   `codigo_postal` VARCHAR(20) NOT NULL,
    PRIMARY KEY (`cod_endereco`),
-  UNIQUE INDEX `cod_endereco_UNIQUE` (`cod_endereco` ASC) VISIBLE,
   CONSTRAINT `fk_endereco_pais`
     FOREIGN KEY (`cod_pais`) REFERENCES `pais` (`cod_pais`)
     ON DELETE RESTRICT ON UPDATE CASCADE);
@@ -33,22 +33,20 @@ CREATE TABLE `ppgcd_artflix_db`.`endereco` (
 CREATE TABLE `ppgcd_artflix_db`.`assinante` (
   `cod_assinante` INT NOT NULL AUTO_INCREMENT,
   `nome_completo` VARCHAR(128) NOT NULL,
-  `cpf_hash` CHAR(128) NOT NULL,     
-  `email` CHAR(128) NOT NULL,   
+  `tipo_documento` VARCHAR(10) NOT NULL,
+  `documento_hash` CHAR(128) NOT NULL,
+  `email` VARCHAR(128) NOT NULL,   
   `senha_hash` CHAR(128) NOT NULL,   
   `salt` CHAR(32) NOT NULL,          
   `telefone` VARCHAR(20) NOT NULL,
   `data_nascimento` DATE NOT NULL,
   `data_cadastro` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `cod_endereco` INT NOT NULL,
-  `numero` VARCHAR(10) NOT NULL,
-  `complemento` VARCHAR(30) NULL,
   `situacao_cadastro` VARCHAR(20) NULL,
   `data_solicitacao_exclusao` DATETIME NULL,
   `data_anonimizacao` DATETIME NULL,
     PRIMARY KEY (`cod_assinante`),
-  UNIQUE INDEX `cod_assinante_UNIQUE` (`cod_assinante` ASC) VISIBLE,
-  UNIQUE INDEX `cpf_hash_UNIQUE` (`cpf_hash` ASC) VISIBLE,
+  UNIQUE INDEX `uk_assinante_documento` (`tipo_documento` ASC, `documento_hash` ASC) VISIBLE,
   UNIQUE INDEX `email_UNIQUE` (`email` ASC) VISIBLE,
   CONSTRAINT `fk_assinante_endereco`
     FOREIGN KEY (`cod_endereco`) REFERENCES `endereco` (`cod_endereco`)
@@ -62,19 +60,15 @@ CREATE TABLE `ppgcd_artflix_db`.`plano` (
   `resolucao_maxima` VARCHAR(10) NOT NULL,
   `descricao` VARCHAR(60) NOT NULL,
   `indicador_ativo` BOOLEAN NOT NULL,
-   PRIMARY KEY (`cod_plano`),
-   UNIQUE INDEX `cod_plano_UNIQUE` (`cod_plano` ASC) VISIBLE);
+   PRIMARY KEY (`cod_plano`));
 
 CREATE TABLE `ppgcd_artflix_db`.`plano_pais` (
-  `cod_plano_pais` INT NOT NULL AUTO_INCREMENT,
   `cod_plano` INT NOT NULL,
   `cod_pais` INT NOT NULL,
   `preco_mensal` DECIMAL(10,2) NOT NULL,
   `moeda` CHAR(3) NOT NULL,
   `indicador_disponibilidade` BOOLEAN NOT NULL,
-   PRIMARY KEY (`cod_plano_pais`),
-   UNIQUE INDEX `cod_plano_pais_UNIQUE` (`cod_plano_pais` ASC) VISIBLE,
-   UNIQUE INDEX `uk_plano_pais` (`cod_plano` ASC, `cod_pais` ASC) VISIBLE,
+   PRIMARY KEY (`cod_plano`,`cod_pais`),
    CONSTRAINT `fk_plano_pais_plano`
      FOREIGN KEY (`cod_plano`) REFERENCES `plano` (`cod_plano`)
      ON DELETE RESTRICT ON UPDATE CASCADE,
@@ -85,32 +79,32 @@ CREATE TABLE `ppgcd_artflix_db`.`plano_pais` (
 CREATE TABLE `ppgcd_artflix_db`.`status` (
   `cod_status` INT NOT NULL AUTO_INCREMENT,
   `nome_status` VARCHAR(30) NOT NULL,
-  `descricao_status` VARCHAR(60) NOT NULL,
-   PRIMARY KEY (`cod_status`),
-   UNIQUE INDEX `cod_status_UNIQUE` (`cod_status` ASC) VISIBLE);
+  `descricao_status` VARCHAR(80) NOT NULL,
+   PRIMARY KEY (`cod_status`));
 
 CREATE TABLE `ppgcd_artflix_db`.`assinatura` (
   `cod_assinatura` INT NOT NULL AUTO_INCREMENT,
   `cod_assinante` INT NOT NULL,
   `cod_plano` INT NOT NULL,
+  `cod_pais` INT NOT NULL,
   `data_inicio` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `data_vencimento` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `dia_vencimento` TINYINT NOT NULL,
   `valor_contratado` DECIMAL(10,2) NOT NULL,
   `moeda` CHAR(3) NOT NULL,
   `cod_status` INT NOT NULL,
   `data_cancelamento` DATETIME NULL,
   `data_fim_acesso` DATETIME NULL,
    PRIMARY KEY (`cod_assinatura`),
-   UNIQUE INDEX `cod_assinatura_UNIQUE` (`cod_assinatura` ASC) VISIBLE,
    CONSTRAINT `fk_assinatura_assinante`
      FOREIGN KEY (`cod_assinante`) REFERENCES `assinante` (`cod_assinante`)
      ON DELETE RESTRICT ON UPDATE CASCADE,
-   CONSTRAINT `fk_assinatura_plano`
-     FOREIGN KEY (`cod_plano`) REFERENCES `plano` (`cod_plano`)
+   CONSTRAINT `fk_assinatura_plano_pais`
+     FOREIGN KEY (`cod_plano`,`cod_pais`) REFERENCES `plano_pais` (`cod_plano`,`cod_pais`)
      ON DELETE RESTRICT ON UPDATE CASCADE,
    CONSTRAINT `fk_assinatura_status`
      FOREIGN KEY (`cod_status`) REFERENCES `status` (`cod_status`)
-     ON DELETE RESTRICT ON UPDATE CASCADE);
+     ON DELETE RESTRICT ON UPDATE CASCADE),
+   CONSTRAINT `ck_assinatura_dia_vencimento` CHECK (`dia_vencimento` BETWEEN 1 AND 31);
 
 CREATE TABLE `ppgcd_artflix_db`.`historico` (
   `cod_assinatura` INT NOT NULL,
@@ -292,7 +286,7 @@ CREATE TABLE `ppgcd_artflix_db`.`janela` (
   `valor_licenca` DECIMAL(12,2) NULL,
   `moeda` CHAR(3) NULL,
    PRIMARY KEY (`cod_janela`),
-   UNIQUE INDEX `uk_janela` (`cod_contrato` ASC, `cod_titulo` ASC, `cod_pais` ASC) VISIBLE,
+   UNIQUE INDEX `uk_janela` (`cod_contrato` ASC, `cod_titulo` ASC, `cod_pais` ASC, `data_inicio` ASC) VISIBLE,
    UNIQUE INDEX `uk_janela_sessao` (`cod_janela` ASC, `cod_titulo` ASC, `cod_pais` ASC) VISIBLE,
    INDEX `ix_janela_vigencia` (`cod_titulo` ASC, `cod_pais` ASC,
                                `data_inicio` ASC, `data_fim` ASC),
