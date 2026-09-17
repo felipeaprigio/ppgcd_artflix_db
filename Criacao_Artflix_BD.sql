@@ -15,6 +15,14 @@ CREATE TABLE `ppgcd_artflix_db`.`pais` (
    PRIMARY KEY (`cod_pais`),
    UNIQUE INDEX `sigla_iso_UNIQUE` (`sigla_iso` ASC) VISIBLE);
 
+CREATE TABLE `ppgcd_artflix_db`.`cotacao` (
+  `moeda` CHAR(3) NOT NULL,
+  `competencia` CHAR(7) NOT NULL,
+  `taxa_usd` DECIMAL(18,10) NOT NULL,
+  `fonte` VARCHAR(60) NOT NULL,
+   PRIMARY KEY (`moeda`,`competencia`),
+   CONSTRAINT `ck_cotacao_taxa` CHECK (`taxa_usd` > 0));
+
 CREATE TABLE `ppgcd_artflix_db`.`endereco` (
   `cod_endereco` INT NOT NULL AUTO_INCREMENT,
   `cod_pais` INT NOT NULL,
@@ -35,9 +43,9 @@ CREATE TABLE `ppgcd_artflix_db`.`assinante` (
   `nome_completo` VARCHAR(128) NOT NULL,
   `tipo_documento` VARCHAR(10) NOT NULL,
   `documento_hash` CHAR(128) NOT NULL,
-  `email` VARCHAR(128) NOT NULL,   
-  `senha_hash` CHAR(128) NOT NULL,   
-  `salt` CHAR(32) NOT NULL,          
+  `email` VARCHAR(128) NOT NULL,
+  `senha_hash` CHAR(128) NOT NULL,
+  `salt` CHAR(32) NOT NULL,
   `telefone` VARCHAR(20) NOT NULL,
   `data_nascimento` DATE NOT NULL,
   `data_cadastro` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -103,8 +111,8 @@ CREATE TABLE `ppgcd_artflix_db`.`assinatura` (
      ON DELETE RESTRICT ON UPDATE CASCADE,
    CONSTRAINT `fk_assinatura_status`
      FOREIGN KEY (`cod_status`) REFERENCES `status` (`cod_status`)
-     ON DELETE RESTRICT ON UPDATE CASCADE),
-   CONSTRAINT `ck_assinatura_dia_vencimento` CHECK (`dia_vencimento` BETWEEN 1 AND 31);
+     ON DELETE RESTRICT ON UPDATE CASCADE,
+   CONSTRAINT `ck_assinatura_dia_vencimento` CHECK (`dia_vencimento` BETWEEN 1 AND 31));
 
 CREATE TABLE `ppgcd_artflix_db`.`historico` (
   `cod_assinatura` INT NOT NULL,
