@@ -1,0 +1,5 @@
+# arquivo de carga gerado pelo script Python
+carga_artflix.sql
+
+# backups do MySQL Workbench
+*.bak
