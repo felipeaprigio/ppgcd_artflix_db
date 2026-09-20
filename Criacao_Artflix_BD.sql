@@ -5,6 +5,11 @@ CREATE DATABASE ppgcd_artflix_db
   DEFAULT COLLATE utf8mb4_0900_ai_ci;
 USE ppgcd_artflix_db;
 
+CREATE TABLE `ppgcd_artflix_db`.`moeda` (
+  `codigo_moeda` CHAR(3) NOT NULL,
+  `nome_moeda` VARCHAR(40) NOT NULL,
+  `simbolo` VARCHAR(5) NULL,
+   PRIMARY KEY (`codigo_moeda`));
 
 CREATE TABLE `ppgcd_artflix_db`.`pais` (
   `cod_pais` INT NOT NULL AUTO_INCREMENT,
@@ -13,7 +18,11 @@ CREATE TABLE `ppgcd_artflix_db`.`pais` (
   `moeda_padrao` CHAR(3) NOT NULL,
   `idioma_padrao` VARCHAR(20) NOT NULL,
    PRIMARY KEY (`cod_pais`),
-   UNIQUE INDEX `sigla_iso_UNIQUE` (`sigla_iso` ASC) VISIBLE);
+   UNIQUE INDEX `sigla_iso_UNIQUE` (`sigla_iso` ASC) VISIBLE,
+   CONSTRAINT `fk_pais_moeda`
+     FOREIGN KEY (`moeda_padrao`) REFERENCES `moeda` (`codigo_moeda`)
+     ON DELETE RESTRICT ON UPDATE CASCADE);
+
 
 CREATE TABLE `ppgcd_artflix_db`.`cotacao` (
   `moeda` CHAR(3) NOT NULL,
@@ -21,7 +30,10 @@ CREATE TABLE `ppgcd_artflix_db`.`cotacao` (
   `taxa_usd` DECIMAL(18,10) NOT NULL,
   `fonte` VARCHAR(60) NOT NULL,
    PRIMARY KEY (`moeda`,`competencia`),
-   CONSTRAINT `ck_cotacao_taxa` CHECK (`taxa_usd` > 0));
+   CONSTRAINT `ck_cotacao_taxa` CHECK (`taxa_usd` > 0),
+   CONSTRAINT `fk_cotacao_moeda`
+     FOREIGN KEY (`moeda`) REFERENCES `moeda` (`codigo_moeda`)
+     ON DELETE RESTRICT ON UPDATE CASCADE);
 
 CREATE TABLE `ppgcd_artflix_db`.`endereco` (
   `cod_endereco` INT NOT NULL AUTO_INCREMENT,
@@ -82,6 +94,9 @@ CREATE TABLE `ppgcd_artflix_db`.`plano_pais` (
      ON DELETE RESTRICT ON UPDATE CASCADE,
    CONSTRAINT `fk_plano_pais_pais`
      FOREIGN KEY (`cod_pais`) REFERENCES `pais` (`cod_pais`)
+     ON DELETE RESTRICT ON UPDATE CASCADE,
+   CONSTRAINT `fk_plano_pais_moeda`
+     FOREIGN KEY (`moeda`) REFERENCES `moeda` (`codigo_moeda`)
      ON DELETE RESTRICT ON UPDATE CASCADE);
 
 CREATE TABLE `ppgcd_artflix_db`.`status` (
@@ -111,6 +126,9 @@ CREATE TABLE `ppgcd_artflix_db`.`assinatura` (
      ON DELETE RESTRICT ON UPDATE CASCADE,
    CONSTRAINT `fk_assinatura_status`
      FOREIGN KEY (`cod_status`) REFERENCES `status` (`cod_status`)
+     ON DELETE RESTRICT ON UPDATE CASCADE,
+   CONSTRAINT `fk_assinatura_moeda`
+     FOREIGN KEY (`moeda`) REFERENCES `moeda` (`codigo_moeda`)
      ON DELETE RESTRICT ON UPDATE CASCADE,
    CONSTRAINT `ck_assinatura_dia_vencimento` CHECK (`dia_vencimento` BETWEEN 1 AND 31));
 
@@ -249,7 +267,10 @@ CREATE TABLE `ppgcd_artflix_db`.`cobranca` (
    INDEX `ix_cobranca_situacao` (`situacao_pagamento` ASC, `data_vencimento` ASC),
    CONSTRAINT `fk_cobranca_assinatura`
      FOREIGN KEY (`cod_assinatura`) REFERENCES `assinatura` (`cod_assinatura`)
-     ON DELETE CASCADE ON UPDATE CASCADE);
+     ON DELETE CASCADE ON UPDATE CASCADE,
+   CONSTRAINT `fk_cobranca_moeda`
+     FOREIGN KEY (`moeda`) REFERENCES `moeda` (`codigo_moeda`)
+     ON DELETE RESTRICT ON UPDATE CASCADE);     
 
 CREATE TABLE `ppgcd_artflix_db`.`fornecedor` (
   `cod_fornecedor` INT NOT NULL AUTO_INCREMENT,
@@ -281,6 +302,9 @@ CREATE TABLE `ppgcd_artflix_db`.`contrato` (
    CONSTRAINT `fk_contrato_fornecedor`
      FOREIGN KEY (`cod_fornecedor`) REFERENCES `fornecedor` (`cod_fornecedor`)
      ON DELETE RESTRICT ON UPDATE CASCADE,
+   CONSTRAINT `fk_contrato_moeda`
+     FOREIGN KEY (`moeda`) REFERENCES `moeda` (`codigo_moeda`)
+     ON DELETE RESTRICT ON UPDATE CASCADE,
    CONSTRAINT `ck_contrato_vigencia` CHECK (`data_fim_vigencia` > `data_inicio_vigencia`));
 
 CREATE TABLE `ppgcd_artflix_db`.`janela` (
@@ -307,6 +331,9 @@ CREATE TABLE `ppgcd_artflix_db`.`janela` (
    CONSTRAINT `fk_janela_pais`
      FOREIGN KEY (`cod_pais`) REFERENCES `pais` (`cod_pais`)
      ON DELETE RESTRICT ON UPDATE CASCADE,
+   CONSTRAINT `fk_janela_moeda`
+     FOREIGN KEY (`moeda`) REFERENCES `moeda` (`codigo_moeda`)
+     ON DELETE SET NULL ON UPDATE CASCADE,
    CONSTRAINT `ck_janela_periodo` CHECK (`data_fim` > `data_inicio`));
 
 CREATE TABLE `ppgcd_artflix_db`.`sessoes` (

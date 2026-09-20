@@ -111,6 +111,22 @@ PAISES = [
      ["Central", "Alto Parana", "Itapua"]),
 ]
 
+MOEDAS = [
+    # codigo ISO 4217, nome, simbolo
+    ("ARS", "Peso argentino", "$"),
+    ("BRL", "Real brasileiro", "R$"),
+    ("CLP", "Peso chileno", "$"),
+    ("COP", "Peso colombiano", "$"),
+    ("MXN", "Peso mexicano", "$"),
+    ("PEN", "Sol peruano", "S/"),
+    ("PYG", "Guarani paraguaio", "Gs"),
+    ("USD", "Dolar americano", "US$"),
+    ("UYU", "Peso uruguaio", "$U"),
+]
+
+# moedas aceitas nos contratos de licenciamento
+MOEDAS_LICENCIAMENTO = ["BRL", "USD"]
+
 # fator aproximado da moeda em relacao ao real, so para dar precos plausiveis
 FATOR_MOEDA = {
     "BRL": 1.0, "ARS": 25.0, "CLP": 180.0, "COP": 800.0,
@@ -121,6 +137,7 @@ FATOR_MOEDA = {
 TAXA_USD = {
     "BRL": 5.40, "ARS": 135.0, "CLP": 950.0, "COP": 4200.0,
     "MXN": 18.5, "PEN": 3.80, "UYU": 41.0, "PYG": 7400.0,
+    "USD": 1.0,
 }
 
 CLASSIFICACOES = [
@@ -201,6 +218,15 @@ def main():
     arq.write("SET UNIQUE_CHECKS = 0;\n")
     arq.write("SET AUTOCOMMIT = 0;\n")
 
+    # ---------- moeda ----------
+    codigos_moeda = {m[0] for m in MOEDAS}
+    for sigla, nome, moeda, idioma, subdivs in PAISES:
+        assert moeda in codigos_moeda, "moeda %s fora da tabela MOEDA" % moeda
+    for moeda in list(FATOR_MOEDA) + list(TAXA_USD) + MOEDAS_LICENCIAMENTO:
+        assert moeda in codigos_moeda, "moeda %s fora da tabela MOEDA" % moeda
+    escrever_insert(arq, "moeda",
+                    ["codigo_moeda", "nome_moeda", "simbolo"], MOEDAS)
+
     # ---------- pais ----------
     paises = []
     for i, (sigla, nome, moeda, idioma, subdivs) in enumerate(PAISES, start=1):
@@ -219,6 +245,10 @@ def main():
     comps_cotacao = competencias(date(2023, 1, 1), DATA_REFERENCIA.date())
     linhas = []
     for moeda, taxa_base in TAXA_USD.items():
+        if moeda == "USD":  # moeda de referencia: paridade fixa
+            for comp in comps_cotacao:
+                linhas.append((moeda, comp, 1.0, "Paridade"))
+            continue
         taxa = taxa_base * random.uniform(0.85, 1.0)
         for comp in comps_cotacao:
             taxa *= random.uniform(0.985, 1.02)  # variacao mensal
@@ -592,7 +622,7 @@ def main():
             cod, cod_forn, "CT-%04d/%d" % (cod, assinatura_ct.year),
             assinatura_ct, inicio, fim,
             round(random.uniform(150_000, 4_000_000), 2),
-            random.choice(["BRL", "USD"]), situacao,
+            random.choice(MOEDAS_LICENCIAMENTO), situacao,
         ))
     escrever_insert(
         arq, "contrato",
@@ -623,7 +653,7 @@ def main():
         if fim <= inicio:
             continue
         cod_janela += 1
-        moeda_lic = random.choice(["BRL", "USD"])
+        moeda_lic = random.choice(MOEDAS_LICENCIAMENTO)
         janelas.append({
             "cod": cod_janela, "titulo": t["cod"], "pais": p["cod"],
             "inicio": inicio, "fim": fim, "idade": t["idade"],
