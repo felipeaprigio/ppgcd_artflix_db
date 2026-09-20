@@ -168,7 +168,7 @@ CREATE TABLE `ppgcd_artflix_db`.`titulo` (
   `duracao_segundos` INT NOT NULL,
   `sinopse` TEXT NULL,
   `idioma_original` VARCHAR(30) NULL,
-  `pais_origem` INT NULL,
+  `cod_pais_origem` INT NULL,
   `cod_classificacao` INT NOT NULL,
    PRIMARY KEY (`cod_titulo`),
    UNIQUE INDEX `uk_titulo` (`nome_titulo` ASC, `ano_lancamento` ASC) VISIBLE,
@@ -176,7 +176,7 @@ CREATE TABLE `ppgcd_artflix_db`.`titulo` (
      FOREIGN KEY (`cod_classificacao`) REFERENCES `classificacao` (`cod_classificacao`)
      ON DELETE RESTRICT ON UPDATE CASCADE,
    CONSTRAINT `fk_titulo_pais`
-     FOREIGN KEY (`pais_origem`) REFERENCES `pais` (`cod_pais`)
+     FOREIGN KEY (`cod_pais_origem`) REFERENCES `pais` (`cod_pais`)
      ON DELETE SET NULL ON UPDATE CASCADE);
 
 CREATE TABLE `ppgcd_artflix_db`.`titulo_genero` (
