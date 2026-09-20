@@ -24,6 +24,18 @@ ARQUIVO_SAIDA = "carga_artflix.sql"
 DATA_REFERENCIA = datetime(2026, 9, 1)  # "hoje" do banco
 LINHAS_POR_INSERT = 500  # agrupa varias linhas em um INSERT so
 
+# tabelas na ordem em que sao carregadas; a limpeza roda na ordem inversa
+TABELAS = [
+    "moeda", "pais", "cotacao", "classificacao", "status", "genero",
+    "plano", "plano_pais", "endereco", "assinante", "assinatura",
+    "historico", "cobranca", "perfil", "dispositivo", "titulo",
+    "titulo_genero", "fornecedor", "contrato", "janela", "login",
+    "pesquisa", "sessoes", "avaliacao",
+]
+
+# preenchido por escrever_insert; conferido no fim contra TABELAS
+TABELAS_ESCRITAS = set()
+
 # ==========================================================
 
 random.seed(SEED)
@@ -51,6 +63,7 @@ def lit(valor):
 
 def escrever_insert(arq, tabela, colunas, linhas):
     """Escreve os INSERTs de uma tabela em lotes."""
+    TABELAS_ESCRITAS.add(tabela)
     if not linhas:
         return
     cols = ", ".join("`%s`" % c for c in colunas)
@@ -217,6 +230,16 @@ def main():
     arq.write("SET FOREIGN_KEY_CHECKS = 0;\n")
     arq.write("SET UNIQUE_CHECKS = 0;\n")
     arq.write("SET AUTOCOMMIT = 0;\n")
+
+    # ---------- limpeza ----------
+    # torna a carga reexecutavel sobre um banco ja povoado.
+    # depende do FOREIGN_KEY_CHECKS = 0 escrito acima: sem isso o InnoDB
+    # recusa TRUNCATE em tabela que e pai de alguma FK.
+    # atencao: TRUNCATE e DDL, faz commit implicito e nao volta com ROLLBACK.
+    arq.write("\n-- limpeza: torna a carga reexecutavel sobre um banco ja povoado\n")
+    for tabela in reversed(TABELAS):
+        arq.write("TRUNCATE TABLE `%s`;\n" % tabela)
+    arq.write("\n")
 
     # ---------- moeda ----------
     codigos_moeda = {m[0] for m in MOEDAS}
@@ -569,19 +592,19 @@ def main():
 
         cod_class = random.choices([1, 2, 3, 4, 5, 6],
                                    weights=[20, 15, 20, 15, 15, 15])[0]
-        pais_origem = random.choice(paises)["cod"]
+        cod_pais_origem = random.choice(paises)["cod"]
         titulos.append({"cod": cod, "duracao": duracao, "classe": cod_class,
                         "idade": CLASSIFICACOES[cod_class - 1][1], "ano": ano})
         linhas.append((
             cod, nome, tipo, ano, duracao,
             fake.sentence(nb_words=18)[:400],
             random.choice(["Portugues", "Espanhol", "Ingles"]),
-            pais_origem, cod_class,
+            cod_pais_origem, cod_class,
         ))
     escrever_insert(
         arq, "titulo",
         ["cod_titulo", "nome_titulo", "tipo_titulo", "ano_lancamento",
-         "duracao_segundos", "sinopse", "idioma_original", "pais_origem",
+         "duracao_segundos", "sinopse", "idioma_original", "cod_pais_origem",
          "cod_classificacao"], linhas,
     )
 
@@ -794,6 +817,12 @@ def main():
     arq.write("SET UNIQUE_CHECKS = 1;\n")
     arq.write("COMMIT;\n")
     arq.close()
+
+    # se uma tabela nova entrou na carga e nao foi incluida em TABELAS, ela
+    # ficaria de fora da limpeza e so daria erro de duplicata no Workbench
+    faltando = TABELAS_ESCRITAS - set(TABELAS)
+    if faltando:
+        raise SystemExit("tabelas fora da limpeza: %s" % sorted(faltando))
 
     import os
     tamanho = os.path.getsize(ARQUIVO_SAIDA) / (1024 * 1024)
