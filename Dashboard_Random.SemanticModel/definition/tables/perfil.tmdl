@@ -1,0 +1,101 @@
+table perfil
+	lineageTag: f4a0fd76-dec2-4d86-8a85-d322e0c2c691
+
+	column cod_perfil
+		dataType: int64
+		formatString: 0
+		lineageTag: bc54dd75-f955-41ab-9440-e9c3627ab3b1
+		summarizeBy: none
+		sourceColumn: cod_perfil
+
+		annotation SummarizationSetBy = Automatic
+
+	column cod_assinatura
+		dataType: int64
+		formatString: 0
+		lineageTag: ed26db3d-62b0-4fae-981c-ea829e93b029
+		summarizeBy: none
+		sourceColumn: cod_assinatura
+
+		annotation SummarizationSetBy = Automatic
+
+	column nome_perfil
+		dataType: string
+		lineageTag: e7ade674-dc4f-4892-b8a1-811e40715ed3
+		summarizeBy: none
+		sourceColumn: nome_perfil
+
+		annotation SummarizationSetBy = Automatic
+
+	column data_nascimento
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: 4e8c12bc-1594-4a4d-83a3-756d12beeafc
+		summarizeBy: none
+		sourceColumn: data_nascimento
+
+		variation Variation
+			isDefault
+			relationship: 5d1a5933-1d88-42d7-88f7-fe731a1cd1fb
+			defaultHierarchy: LocalDateTable_27e67ac1-d65a-4e9b-9bd4-5d029dcec3cd.'Hierarquia de datas'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column cod_classificacao
+		dataType: int64
+		formatString: 0
+		lineageTag: 3bbfe79a-e2bd-4098-9195-5ef20c2c1cdf
+		summarizeBy: none
+		sourceColumn: cod_classificacao
+
+		annotation SummarizationSetBy = Automatic
+
+	column avatar
+		dataType: string
+		lineageTag: 451b217e-e1b2-4b13-a353-95eb03852e8e
+		summarizeBy: none
+		sourceColumn: avatar
+
+		annotation SummarizationSetBy = Automatic
+
+	column indicador_infantil
+		dataType: boolean
+		formatString: """TRUE"";""TRUE"";""FALSE"""
+		lineageTag: 39a1daf0-07de-4d00-a742-3f0cf1866b06
+		summarizeBy: none
+		sourceColumn: indicador_infantil
+
+		annotation SummarizationSetBy = Automatic
+
+	column data_criacao
+		dataType: dateTime
+		formatString: General Date
+		lineageTag: ba471c37-bc6a-4db7-98e0-e1175ff920cf
+		summarizeBy: none
+		sourceColumn: data_criacao
+
+		variation Variation
+			isDefault
+			relationship: f9703253-9787-40e6-8994-16f87aed5232
+			defaultHierarchy: LocalDateTable_55008e82-b3dc-4b00-9c00-d7bab10bdc0e.'Hierarquia de datas'
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Idade permitida' = RELATED ( classificacao[idade_minima] )
+		formatString: 0
+		lineageTag: 5b6080e3-916a-4f69-a4a2-895244d81a71
+		summarizeBy: sum
+
+		annotation SummarizationSetBy = Automatic
+
+	partition perfil = m
+		mode: import
+		source =
+				let
+				    Fonte = MySQL.Database("localhost:3306", "ppgcd_artflix_random", [ReturnSingleDatabase=true]),
+				    ppgcd_artflix_random_perfil = Fonte{[Schema="ppgcd_artflix_random",Item="perfil"]}[Data]
+				in
+				    ppgcd_artflix_random_perfil
+

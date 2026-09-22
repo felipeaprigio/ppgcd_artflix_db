@@ -1,0 +1,154 @@
+table titulo
+	lineageTag: 09afd9be-0fcd-42d1-98af-c10a10df7dfa
+
+	column cod_titulo
+		dataType: int64
+		formatString: 0
+		lineageTag: aa36cee1-1358-4cdf-9440-d1c866a1ec5f
+		summarizeBy: none
+		sourceColumn: cod_titulo
+
+		annotation SummarizationSetBy = Automatic
+
+	column nome_titulo
+		dataType: string
+		lineageTag: 8866ee5e-a2df-480a-9995-e5ed69c1fd64
+		summarizeBy: none
+		sourceColumn: nome_titulo
+
+		annotation SummarizationSetBy = Automatic
+
+	column tipo_titulo
+		dataType: string
+		lineageTag: df6342ff-d903-4e6c-ab00-fc1d38318552
+		summarizeBy: none
+		sourceColumn: tipo_titulo
+
+		annotation SummarizationSetBy = Automatic
+
+	column ano_lancamento
+		dataType: int64
+		formatString: 0
+		lineageTag: 8b9221ce-7239-4bb7-98bc-d3bd4302b24f
+		summarizeBy: sum
+		sourceColumn: ano_lancamento
+
+		annotation SummarizationSetBy = Automatic
+
+	column duracao_segundos
+		dataType: int64
+		formatString: 0
+		lineageTag: 4f00491f-3d1a-435a-a23c-16ca4e8393e7
+		summarizeBy: sum
+		sourceColumn: duracao_segundos
+
+		annotation SummarizationSetBy = Automatic
+
+	column sinopse
+		dataType: string
+		lineageTag: 8b326aab-44f8-45cd-bbea-c4d6bb569003
+		summarizeBy: none
+		sourceColumn: sinopse
+
+		annotation SummarizationSetBy = Automatic
+
+	column idioma_original
+		dataType: string
+		lineageTag: 1e611d8b-dca2-4b2a-aefe-12be50e96916
+		summarizeBy: none
+		sourceColumn: idioma_original
+
+		annotation SummarizationSetBy = Automatic
+
+	column pais_origem
+		dataType: int64
+		formatString: 0
+		lineageTag: 2e425f9a-8637-41c5-af67-24bb70a2bcb4
+		summarizeBy: sum
+		sourceColumn: cod_pais_origem
+
+		annotation SummarizationSetBy = Automatic
+
+	column cod_classificacao
+		dataType: int64
+		formatString: 0
+		lineageTag: 36ecf26c-4aa1-4e99-a060-f13488509379
+		summarizeBy: sum
+		sourceColumn: cod_classificacao
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Idade mínima' = LOOKUPVALUE ( classificacao[idade_minima], classificacao[cod_classificacao], titulo[cod_classificacao] )
+		formatString: 0
+		lineageTag: 18b18d58-f6cd-4447-a72b-ad771604ace8
+		summarizeBy: sum
+
+		annotation SummarizationSetBy = Automatic
+
+	column Origem =
+			
+			VAR sigla = LOOKUPVALUE ( pais[sigla_iso], pais[cod_pais], titulo[pais_origem] )
+			RETURN
+			    SWITCH (
+			        TRUE (),
+			        ISBLANK ( titulo[pais_origem] ), "Não informado",
+			        sigla IN { "BR", "AR", "CL", "CO", "PE", "MX" }, "América Latina",
+			        "Resto do mundo"
+			    )
+		lineageTag: 187e6418-cdad-49e7-b648-01529439c60c
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Sessões do título' = COUNTROWS ( RELATEDTABLE ( sessoes ) ) + 0
+		formatString: 0
+		lineageTag: 0cbda2b6-1b57-45f4-8079-250d52ddc313
+		summarizeBy: sum
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Posição na audiência' = RANKX ( titulo, titulo[Sessões do título], , DESC, Skip )
+		formatString: 0
+		lineageTag: 95f00455-fd6e-4563-935a-527a87e878e8
+		summarizeBy: sum
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Faixa de audiência' =
+			
+			SWITCH (
+			    TRUE (),
+			    titulo[Posição na audiência] <= 20, "1. Top 20",
+			    titulo[Posição na audiência] <= 60, "2. Do 21º ao 60º",
+			    titulo[Posição na audiência] <= 150, "3. Do 61º ao 150º",
+			    "4. Do 151º em diante"
+			)
+		lineageTag: 52f4b47c-dbe8-4453-b639-863c16df0e66
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Região nº' = LOOKUPVALUE ( pais[Região nº], pais[cod_pais], titulo[pais_origem] )
+		isHidden
+		formatString: 0
+		lineageTag: 152b8617-51fe-412a-b4fb-ec9d0ff1f11f
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	column Região = LOOKUPVALUE ( pais[Região], pais[cod_pais], titulo[pais_origem] )
+		lineageTag: 28dd9ea0-499e-4a41-a1a2-2049ac629136
+		summarizeBy: none
+		sortByColumn: 'Região nº'
+
+		annotation SummarizationSetBy = Automatic
+
+	partition titulo = m
+		mode: import
+		source =
+				let
+				    Fonte = MySQL.Database("localhost:3306", "ppgcd_artflix_random", [ReturnSingleDatabase=true]),
+				    ppgcd_artflix_random_titulo = Fonte{[Schema="ppgcd_artflix_random",Item="titulo"]}[Data]
+				in
+				    ppgcd_artflix_random_titulo
+

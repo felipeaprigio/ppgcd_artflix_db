@@ -1,0 +1,67 @@
+table dispositivo
+	lineageTag: f1bca706-a214-4378-b4aa-45b36baf8e1b
+
+	column cod_dispositivo
+		dataType: int64
+		formatString: 0
+		lineageTag: 654fb8fe-3799-4b76-aef4-3ae998f1a339
+		summarizeBy: none
+		sourceColumn: cod_dispositivo
+
+		annotation SummarizationSetBy = Automatic
+
+	column identificador_dispositivo
+		dataType: string
+		lineageTag: 9ec11102-b164-4ecf-84f8-adcbfdf1ef42
+		summarizeBy: none
+		sourceColumn: identificador_dispositivo
+
+		annotation SummarizationSetBy = Automatic
+
+	column tipo_dispositivo
+		dataType: string
+		lineageTag: 19b85e32-dfb3-4d54-978a-0815184b8d84
+		summarizeBy: none
+		sourceColumn: tipo_dispositivo
+
+		annotation SummarizationSetBy = Automatic
+
+	column sistema_operacional
+		dataType: string
+		lineageTag: 26fb7343-41aa-4022-9491-1f4ba17b30aa
+		summarizeBy: none
+		sourceColumn: sistema_operacional
+
+		annotation SummarizationSetBy = Automatic
+
+	column modelo
+		dataType: string
+		lineageTag: 5e6d7030-575d-4d63-8174-1a423c81e5d1
+		summarizeBy: none
+		sourceColumn: modelo
+
+		annotation SummarizationSetBy = Automatic
+
+	column fabricante
+		dataType: string
+		lineageTag: 8e7577b7-ab68-45d0-a817-9bfe75742e07
+		summarizeBy: none
+		sourceColumn: fabricante
+
+		annotation SummarizationSetBy = Automatic
+
+	column Dispositivo = SWITCH ( dispositivo[tipo_dispositivo], "CELULAR", "Celular", "TABLET", "Tablet", "WEB", "Navegador", "CONSOLE", "Console", dispositivo[tipo_dispositivo] )
+		lineageTag: 621c605a-604e-49f1-a847-fb28a3a6584f
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	partition dispositivo = m
+		mode: import
+		source =
+				let
+				    Fonte = MySQL.Database("localhost:3306", "ppgcd_artflix_random", [ReturnSingleDatabase=true]),
+				    ppgcd_artflix_random_dispositivo = Fonte{[Schema="ppgcd_artflix_random",Item="dispositivo"]}[Data]
+				in
+				    ppgcd_artflix_random_dispositivo
+

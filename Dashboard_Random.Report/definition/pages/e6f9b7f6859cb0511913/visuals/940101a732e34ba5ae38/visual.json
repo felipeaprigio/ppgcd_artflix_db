@@ -1,0 +1,206 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.12.0/schema.json",
+  "name": "940101a732e34ba5ae38",
+  "position": {
+    "x": 85,
+    "y": 1075,
+    "z": 1008,
+    "height": 410,
+    "width": 1109,
+    "tabOrder": 1008
+  },
+  "visual": {
+    "visualType": "tableEx",
+    "query": {
+      "queryState": {
+        "Values": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "titulo"
+                    }
+                  },
+                  "Property": "nome_titulo"
+                }
+              },
+              "queryRef": "titulo.nome_titulo",
+              "nativeQueryRef": "nome_titulo",
+              "displayName": "Título"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "janela"
+                    }
+                  },
+                  "Property": "País da licença"
+                }
+              },
+              "queryRef": "janela.País da licença",
+              "nativeQueryRef": "País da licença",
+              "displayName": "País"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "janela"
+                    }
+                  },
+                  "Property": "data_fim"
+                }
+              },
+              "queryRef": "janela.data_fim",
+              "nativeQueryRef": "data_fim",
+              "displayName": "Vence em"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Medidas"
+                    }
+                  },
+                  "Property": "Dias para vencer (90 dias)"
+                }
+              },
+              "queryRef": "_Medidas.Dias para vencer (90 dias)",
+              "nativeQueryRef": "Dias para vencer (90 dias)",
+              "displayName": "Dias"
+            },
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Medidas"
+                    }
+                  },
+                  "Property": "Sessões na janela (90 dias)"
+                }
+              },
+              "queryRef": "_Medidas.Sessões na janela (90 dias)",
+              "nativeQueryRef": "Sessões na janela (90 dias)",
+              "displayName": "Sessões"
+            }
+          ]
+        }
+      },
+      "sortDefinition": {
+        "sort": [
+          {
+            "field": {
+              "Measure": {
+                "Expression": {
+                  "SourceRef": {
+                    "Entity": "_Medidas"
+                  }
+                },
+                "Property": "Sessões na janela (90 dias)"
+              }
+            },
+            "direction": "Descending"
+          }
+        ],
+        "isDefaultSort": true
+      }
+    },
+    "drillFilterOtherVisuals": true,
+    "objects": {
+      "total": [
+        {
+          "properties": {
+            "totals": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "grid": [
+        {
+          "properties": {
+            "textSize": {
+              "expr": {
+                "Literal": {
+                  "Value": "13D"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "columnHeaders": [
+        {
+          "properties": {
+            "fontSize": {
+              "expr": {
+                "Literal": {
+                  "Value": "13D"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "values": [
+        {
+          "properties": {
+            "fontSize": {
+              "expr": {
+                "Literal": {
+                  "Value": "13D"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "visualContainerObjects": {
+      "title": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "text": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Janelas que vencem em 90 dias'"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "subTitle": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}

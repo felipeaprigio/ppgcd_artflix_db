@@ -1,0 +1,104 @@
+table login
+	lineageTag: 17492eaa-8f9f-4e1c-b9f7-7155a7caeaa2
+
+	column cod_login
+		dataType: int64
+		formatString: 0
+		lineageTag: 94f43537-a369-4755-b5b1-e7b311c6088e
+		summarizeBy: sum
+		sourceColumn: cod_login
+
+		annotation SummarizationSetBy = Automatic
+
+	column cod_perfil
+		dataType: int64
+		formatString: 0
+		lineageTag: de7840a6-fb63-482d-b8ee-fefed6c39ab3
+		summarizeBy: none
+		sourceColumn: cod_perfil
+
+		annotation SummarizationSetBy = Automatic
+
+	column cod_dispositivo
+		dataType: int64
+		formatString: 0
+		lineageTag: d859ec97-6122-4fc2-9a39-e00272a2763b
+		summarizeBy: none
+		sourceColumn: cod_dispositivo
+
+		annotation SummarizationSetBy = Automatic
+
+	column data_hora_login
+		dataType: dateTime
+		formatString: General Date
+		lineageTag: 8c1f7b21-0330-4b0a-b1d7-e0c197bc719a
+		summarizeBy: none
+		sourceColumn: data_hora_login
+
+		variation Variation
+			isDefault
+			relationship: 5b96d145-15ff-4152-b132-6226ad7ebb1d
+			defaultHierarchy: LocalDateTable_bad8b44d-d850-4bf9-ab54-63111a832d3a.'Hierarquia de datas'
+
+		annotation SummarizationSetBy = Automatic
+
+	column endereco_ip
+		dataType: string
+		lineageTag: e3a2eca1-d354-4756-8bf2-d26adc56eb3c
+		summarizeBy: none
+		sourceColumn: endereco_ip
+
+		annotation SummarizationSetBy = Automatic
+
+	column latitude
+		dataType: double
+		lineageTag: 28d9abd8-9149-4a69-b587-b6ab62f782fb
+		summarizeBy: sum
+		sourceColumn: latitude
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column longitude
+		dataType: double
+		lineageTag: 9e889910-b378-4e62-98de-e3073fb590dc
+		summarizeBy: sum
+		sourceColumn: longitude
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column indicador_gps
+		dataType: boolean
+		formatString: """TRUE"";""TRUE"";""FALSE"""
+		lineageTag: c01aacf3-f3e6-43e0-a1d4-3bda0fef9fbd
+		summarizeBy: none
+		sourceColumn: indicador_gps
+
+		annotation SummarizationSetBy = Automatic
+
+	column data_anonimizacao
+		dataType: dateTime
+		formatString: General Date
+		lineageTag: 8c345c7e-69ea-4828-8b90-76358095dc94
+		summarizeBy: none
+		sourceColumn: data_anonimizacao
+
+		variation Variation
+			isDefault
+			relationship: 5a1858ce-bb33-47aa-8e6f-d7c2dd682b4c
+			defaultHierarchy: LocalDateTable_d2d99e69-f871-4e63-8524-6c3cedccab1b.'Hierarquia de datas'
+
+		annotation SummarizationSetBy = Automatic
+
+	partition login = m
+		mode: import
+		source =
+				let
+				    Fonte = MySQL.Database("localhost:3306", "ppgcd_artflix_random", [ReturnSingleDatabase=true]),
+				    ppgcd_artflix_random_login = Fonte{[Schema="ppgcd_artflix_random",Item="login"]}[Data]
+				in
+				    ppgcd_artflix_random_login
+

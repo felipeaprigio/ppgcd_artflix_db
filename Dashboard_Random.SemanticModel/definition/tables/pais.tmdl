@@ -1,0 +1,74 @@
+table pais
+	lineageTag: 837129a6-5ef3-4967-9126-ffe8ceb62a53
+
+	column cod_pais
+		dataType: int64
+		formatString: 0
+		lineageTag: a2306528-5099-4254-b7be-d912a6ebccd0
+		summarizeBy: none
+		sourceColumn: cod_pais
+
+		annotation SummarizationSetBy = Automatic
+
+	column sigla_iso
+		dataType: string
+		lineageTag: fd33cc0a-4554-49a3-abcc-2a93a3581a1a
+		summarizeBy: none
+		sourceColumn: sigla_iso
+
+		annotation SummarizationSetBy = Automatic
+
+	column nome_pais
+		dataType: string
+		lineageTag: 743721de-f2a8-4c52-ab99-d93886f7e9a9
+		summarizeBy: none
+		sourceColumn: nome_pais
+
+		annotation SummarizationSetBy = Automatic
+
+	column moeda_padrao
+		dataType: string
+		lineageTag: cdfcd7bc-811f-4b8a-b4dd-763a5f7e9a7a
+		summarizeBy: none
+		sourceColumn: moeda_padrao
+
+		annotation SummarizationSetBy = Automatic
+
+	column idioma_padrao
+		dataType: string
+		lineageTag: 72626c45-ace7-4b34-abc6-9e2eae162f8c
+		summarizeBy: none
+		sourceColumn: idioma_padrao
+
+		annotation SummarizationSetBy = Automatic
+
+	column País = SWITCH ( pais[sigla_iso], "BR", "Brasil", "AR", "Argentina", "CL", "Chile", "CO", "Colômbia", "PE", "Peru", pais[nome_pais] )
+		lineageTag: a7e03e20-2a70-4c3e-979b-56cf258422c0
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Região nº' = SWITCH ( TRUE (), pais[sigla_iso] IN { "BR", "AR", "CL", "CO", "PE", "MX" }, 1, pais[sigla_iso] IN { "US" }, 2, pais[sigla_iso] IN { "GB", "FR", "IT", "ES", "DE", "IE", "PL", "SE", "DK", "HU", "NL", "MK" }, 3, 4 )
+		isHidden
+		formatString: 0
+		lineageTag: 69d3519f-881e-41ab-b8cf-82eb9ec6960a
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	column Região = SWITCH ( TRUE (), pais[sigla_iso] IN { "BR", "AR", "CL", "CO", "PE", "MX" }, "América Latina", pais[sigla_iso] IN { "US" }, "América do Norte", pais[sigla_iso] IN { "GB", "FR", "IT", "ES", "DE", "IE", "PL", "SE", "DK", "HU", "NL", "MK" }, "Europa", "Ásia e Oriente Médio" )
+		lineageTag: 1d33c1c9-92b6-426b-8c33-dd71d08a6761
+		summarizeBy: none
+		sortByColumn: 'Região nº'
+
+		annotation SummarizationSetBy = Automatic
+
+	partition pais = m
+		mode: import
+		source =
+				let
+				    Fonte = MySQL.Database("localhost:3306", "ppgcd_artflix_random", [ReturnSingleDatabase=true]),
+				    ppgcd_artflix_random_pais = Fonte{[Schema="ppgcd_artflix_random",Item="pais"]}[Data]
+				in
+				    ppgcd_artflix_random_pais
+

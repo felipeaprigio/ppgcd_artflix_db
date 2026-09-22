@@ -1,0 +1,39 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.12.0/schema.json",
+  "name": "72def2d73ebe47c4b6a4",
+  "position": {
+    "x": 559,
+    "y": 384,
+    "z": 1003,
+    "height": 154,
+    "width": 431,
+    "tabOrder": 1003
+  },
+  "visual": {
+    "visualType": "card",
+    "query": {
+      "queryState": {
+        "Values": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Medidas"
+                    }
+                  },
+                  "Property": "Janelas vigentes"
+                }
+              },
+              "queryRef": "_Medidas.Janelas vigentes",
+              "nativeQueryRef": "Janelas vigentes",
+              "displayName": "LICENÇAS VIGENTES"
+            }
+          ]
+        }
+      }
+    },
+    "drillFilterOtherVisuals": true
+  }
+}

@@ -1,0 +1,57 @@
+table plano_pais
+	lineageTag: 5c7b7835-1fb0-4ed4-9a66-d40fc7d8b819
+
+	column cod_plano
+		dataType: int64
+		formatString: 0
+		lineageTag: ec548536-22ac-4b30-8c46-4e55359f8fd2
+		summarizeBy: none
+		sourceColumn: cod_plano
+
+		annotation SummarizationSetBy = Automatic
+
+	column cod_pais
+		dataType: int64
+		formatString: 0
+		lineageTag: 9fa3f106-a03c-452b-ad43-f519e0cccc60
+		summarizeBy: none
+		sourceColumn: cod_pais
+
+		annotation SummarizationSetBy = Automatic
+
+	column preco_mensal
+		dataType: double
+		lineageTag: b7742b0a-420a-4108-86ef-d1ce08a8584b
+		summarizeBy: sum
+		sourceColumn: preco_mensal
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column moeda
+		dataType: string
+		lineageTag: d6b4dc6e-09b5-4287-be66-a91c8402fe37
+		summarizeBy: none
+		sourceColumn: moeda
+
+		annotation SummarizationSetBy = Automatic
+
+	column indicador_disponibilidade
+		dataType: boolean
+		formatString: """TRUE"";""TRUE"";""FALSE"""
+		lineageTag: 513e4ce6-9482-488b-b927-b92225a42502
+		summarizeBy: none
+		sourceColumn: indicador_disponibilidade
+
+		annotation SummarizationSetBy = Automatic
+
+	partition plano_pais = m
+		mode: import
+		source =
+				let
+				    Fonte = MySQL.Database("localhost:3306", "ppgcd_artflix_random", [ReturnSingleDatabase=true]),
+				    ppgcd_artflix_random_plano_pais = Fonte{[Schema="ppgcd_artflix_random",Item="plano_pais"]}[Data]
+				in
+				    ppgcd_artflix_random_plano_pais
+

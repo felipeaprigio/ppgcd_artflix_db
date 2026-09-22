@@ -1,0 +1,126 @@
+table assinatura
+	lineageTag: 8ff2a4f4-c1d4-41ad-8f70-acc4197289b7
+
+	column cod_assinatura
+		dataType: int64
+		formatString: 0
+		lineageTag: 054181a1-25f6-4904-9673-37a55ca2ed59
+		summarizeBy: none
+		sourceColumn: cod_assinatura
+
+		annotation SummarizationSetBy = Automatic
+
+	column cod_assinante
+		dataType: int64
+		formatString: 0
+		lineageTag: 9373cba9-3766-4a1e-96e7-98f16e5f1ed6
+		summarizeBy: none
+		sourceColumn: cod_assinante
+
+		annotation SummarizationSetBy = Automatic
+
+	column cod_plano
+		dataType: int64
+		formatString: 0
+		lineageTag: 6dd68f29-bf7b-4cef-8bbf-303b214165fa
+		summarizeBy: none
+		sourceColumn: cod_plano
+
+		annotation SummarizationSetBy = Automatic
+
+	column data_inicio
+		dataType: dateTime
+		formatString: General Date
+		lineageTag: 870c79c2-61ae-4bc1-9b19-2ba1287878b5
+		summarizeBy: none
+		sourceColumn: data_inicio
+
+		variation Variation
+			isDefault
+			relationship: 38354ef6-740a-4713-a8a3-291b89a823d0
+			defaultHierarchy: LocalDateTable_684def72-fac7-4a63-886f-91c4f9394742.'Hierarquia de datas'
+
+		annotation SummarizationSetBy = Automatic
+
+	column valor_contratado
+		dataType: double
+		lineageTag: 3420cdae-7cbf-4c1d-8e78-431132e2a344
+		summarizeBy: sum
+		sourceColumn: valor_contratado
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column moeda
+		dataType: string
+		lineageTag: 98dbbddf-3ec8-40db-9e7d-40110d5c8c47
+		summarizeBy: none
+		sourceColumn: moeda
+
+		annotation SummarizationSetBy = Automatic
+
+	column cod_status
+		dataType: int64
+		formatString: 0
+		lineageTag: 2b929be5-8c37-4e9e-aa11-79dc37505a6c
+		summarizeBy: none
+		sourceColumn: cod_status
+
+		annotation SummarizationSetBy = Automatic
+
+	column data_cancelamento
+		dataType: dateTime
+		formatString: General Date
+		lineageTag: 88444d4c-4116-4c99-ba4a-47b345fa718b
+		summarizeBy: none
+		sourceColumn: data_cancelamento
+
+		variation Variation
+			isDefault
+			relationship: b8bcba6b-8492-459e-932e-6b93453d3ea4
+			defaultHierarchy: LocalDateTable_b348c280-cfbb-4b4a-b827-3ef02187d14c.'Hierarquia de datas'
+
+		annotation SummarizationSetBy = Automatic
+
+	column data_fim_acesso
+		dataType: dateTime
+		formatString: General Date
+		lineageTag: 2cdd655d-dfcb-44a5-bc32-02d917e5d066
+		summarizeBy: none
+		sourceColumn: data_fim_acesso
+
+		variation Variation
+			isDefault
+			relationship: 67e3b651-91d4-438c-930e-f6bddc4b6766
+			defaultHierarchy: LocalDateTable_a73d49a7-5a43-483b-bd95-b536144633a2.'Hierarquia de datas'
+
+		annotation SummarizationSetBy = Automatic
+
+	column cod_pais
+		dataType: int64
+		formatString: 0
+		lineageTag: 2d98c02e-d6ea-446b-91f9-174a2cb1f92f
+		summarizeBy: sum
+		sourceColumn: cod_pais
+
+		annotation SummarizationSetBy = Automatic
+
+	column dia_vencimento
+		dataType: int64
+		formatString: 0
+		lineageTag: 37724283-93ab-49c9-8d35-477a336f0a17
+		summarizeBy: sum
+		sourceColumn: dia_vencimento
+
+		annotation SummarizationSetBy = Automatic
+
+	partition assinatura = m
+		mode: import
+		source =
+				let
+				    Fonte = MySQL.Database("localhost:3306", "ppgcd_artflix_random", [ReturnSingleDatabase=true]),
+				    ppgcd_artflix_random_assinatura = Fonte{[Schema="ppgcd_artflix_random",Item="assinatura"]}[Data]
+				in
+				    ppgcd_artflix_random_assinatura
+

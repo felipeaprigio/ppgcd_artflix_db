@@ -1,0 +1,92 @@
+table endereco
+	lineageTag: 2062f259-bfca-4b11-b33b-23d5fa3eb2f5
+
+	column cod_endereco
+		dataType: int64
+		formatString: 0
+		lineageTag: 9f1d3939-a74f-453f-8bc2-fe0814726c2a
+		summarizeBy: none
+		sourceColumn: cod_endereco
+
+		annotation SummarizationSetBy = Automatic
+
+	column cod_pais
+		dataType: int64
+		formatString: 0
+		lineageTag: 39f43a09-8afc-4e79-9ec2-407718a19649
+		summarizeBy: none
+		sourceColumn: cod_pais
+
+		annotation SummarizationSetBy = Automatic
+
+	column subdivisao
+		dataType: string
+		lineageTag: 6aebe73d-5f13-4089-8b9c-a2e028589694
+		summarizeBy: none
+		sourceColumn: subdivisao
+
+		annotation SummarizationSetBy = Automatic
+
+	column cidade
+		dataType: string
+		lineageTag: feb2f29b-9471-49d2-9fe5-bf235da3c284
+		summarizeBy: none
+		sourceColumn: cidade
+
+		annotation SummarizationSetBy = Automatic
+
+	column bairro
+		dataType: string
+		lineageTag: be5bafe4-3aa2-4a0a-b3ad-976409f6c706
+		summarizeBy: none
+		sourceColumn: bairro
+
+		annotation SummarizationSetBy = Automatic
+
+	column logradouro
+		dataType: string
+		lineageTag: 648c3a6c-b17b-41e6-b3df-787e52940447
+		summarizeBy: none
+		sourceColumn: logradouro
+
+		annotation SummarizationSetBy = Automatic
+
+	column codigo_postal
+		dataType: string
+		lineageTag: 5e8dac93-aca4-4f5c-9489-6b48e6c93e1d
+		summarizeBy: none
+		sourceColumn: codigo_postal
+
+		annotation SummarizationSetBy = Automatic
+
+	column País = LOOKUPVALUE ( pais[País], pais[cod_pais], endereco[cod_pais] )
+		lineageTag: f4d58084-ef8b-4848-81a8-0422042020d1
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	column numero
+		dataType: string
+		lineageTag: 49efca8e-df76-424d-aff3-e49a01282b5d
+		summarizeBy: none
+		sourceColumn: numero
+
+		annotation SummarizationSetBy = Automatic
+
+	column complemento
+		dataType: string
+		lineageTag: 28d778af-764a-46a7-b3fe-5ff47eb27509
+		summarizeBy: none
+		sourceColumn: complemento
+
+		annotation SummarizationSetBy = Automatic
+
+	partition endereco = m
+		mode: import
+		source =
+				let
+				    Fonte = MySQL.Database("localhost:3306", "ppgcd_artflix_random", [ReturnSingleDatabase=true]),
+				    ppgcd_artflix_random_endereco = Fonte{[Schema="ppgcd_artflix_random",Item="endereco"]}[Data]
+				in
+				    ppgcd_artflix_random_endereco
+

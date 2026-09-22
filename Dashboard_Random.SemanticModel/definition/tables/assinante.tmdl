@@ -1,0 +1,152 @@
+table assinante
+	lineageTag: beec7b97-9e7c-4c63-afa1-fa703fbfa518
+
+	column cod_assinante
+		dataType: int64
+		formatString: 0
+		lineageTag: ac37fdca-888a-4368-b7c8-74cbbc173db3
+		summarizeBy: none
+		sourceColumn: cod_assinante
+
+		annotation SummarizationSetBy = Automatic
+
+	column nome_completo
+		dataType: string
+		lineageTag: afd3b0a9-7c00-4aad-8492-1483ce316c71
+		summarizeBy: none
+		sourceColumn: nome_completo
+
+		annotation SummarizationSetBy = Automatic
+
+	column email
+		dataType: string
+		lineageTag: 8bcb89e2-fb0b-477d-90f6-707556abb9e9
+		summarizeBy: none
+		sourceColumn: email
+
+		annotation SummarizationSetBy = Automatic
+
+	column senha_hash
+		dataType: string
+		lineageTag: 742bc606-93ae-4e0c-bd50-5ef1ba149053
+		summarizeBy: none
+		sourceColumn: senha_hash
+
+		annotation SummarizationSetBy = Automatic
+
+	column salt
+		dataType: string
+		lineageTag: a1e68ac7-a38f-46d5-a1f4-08b6a51fd860
+		summarizeBy: none
+		sourceColumn: salt
+
+		annotation SummarizationSetBy = Automatic
+
+	column telefone
+		dataType: string
+		lineageTag: 9eef06eb-e786-4d1f-a051-c6c5b8ae6f3b
+		summarizeBy: none
+		sourceColumn: telefone
+
+		annotation SummarizationSetBy = Automatic
+
+	column data_nascimento
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: 1814de59-62e0-483c-af27-7fa49a929f97
+		summarizeBy: none
+		sourceColumn: data_nascimento
+
+		variation Variation
+			isDefault
+			relationship: 79e1b7e1-fe8d-4a0b-a227-cdbff215b892
+			defaultHierarchy: LocalDateTable_6b8f92a3-7389-4407-92b1-1c2b78088f42.'Hierarquia de datas'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column data_cadastro
+		dataType: dateTime
+		formatString: General Date
+		lineageTag: eb6be5c4-3e85-44d9-a485-65c242bfbb61
+		summarizeBy: none
+		sourceColumn: data_cadastro
+
+		variation Variation
+			isDefault
+			relationship: 8e24866a-cb1f-4467-8fe4-5b86950f2723
+			defaultHierarchy: LocalDateTable_92133e32-3035-429a-b7fe-736db1b74b40.'Hierarquia de datas'
+
+		annotation SummarizationSetBy = Automatic
+
+	column cod_endereco
+		dataType: int64
+		formatString: 0
+		lineageTag: 53cb1a13-5327-4275-8479-e7d59b011c4e
+		summarizeBy: none
+		sourceColumn: cod_endereco
+
+		annotation SummarizationSetBy = Automatic
+
+	column situacao_cadastro
+		dataType: string
+		lineageTag: b4b72f13-0a18-47a1-a405-7c266df07988
+		summarizeBy: none
+		sourceColumn: situacao_cadastro
+
+		annotation SummarizationSetBy = Automatic
+
+	column data_solicitacao_exclusao
+		dataType: dateTime
+		formatString: General Date
+		lineageTag: 66326223-ee96-4cd4-956a-bbd6f6b63b3c
+		summarizeBy: none
+		sourceColumn: data_solicitacao_exclusao
+
+		variation Variation
+			isDefault
+			relationship: 669a74ad-f8f4-4d76-9d56-69be439f67dd
+			defaultHierarchy: LocalDateTable_087d8222-d7ad-49ec-9062-3d3b73eafaec.'Hierarquia de datas'
+
+		annotation SummarizationSetBy = Automatic
+
+	column data_anonimizacao
+		dataType: dateTime
+		formatString: General Date
+		lineageTag: 37f5189f-46b6-4c93-a0e1-3fccbeba8761
+		summarizeBy: none
+		sourceColumn: data_anonimizacao
+
+		variation Variation
+			isDefault
+			relationship: 956c26f5-acc6-4bae-847b-60a296d31e96
+			defaultHierarchy: LocalDateTable_d97d71f0-4f2e-4433-a1d8-6eda117ceb94.'Hierarquia de datas'
+
+		annotation SummarizationSetBy = Automatic
+
+	column tipo_documento
+		dataType: string
+		lineageTag: 84e84f78-165c-47c3-8ab2-73a1fdee723a
+		summarizeBy: none
+		sourceColumn: tipo_documento
+
+		annotation SummarizationSetBy = Automatic
+
+	column documento_hash
+		dataType: string
+		lineageTag: fd97d93f-4a3d-4ea4-8ab0-b5a1d7f25d1f
+		summarizeBy: none
+		sourceColumn: documento_hash
+
+		annotation SummarizationSetBy = Automatic
+
+	partition assinante = m
+		mode: import
+		source =
+				let
+				    Fonte = MySQL.Database("localhost:3306", "ppgcd_artflix_random", [ReturnSingleDatabase=true]),
+				    ppgcd_artflix_random_assinante = Fonte{[Schema="ppgcd_artflix_random",Item="assinante"]}[Data]
+				in
+				    ppgcd_artflix_random_assinante
+

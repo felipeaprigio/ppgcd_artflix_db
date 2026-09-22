@@ -1,0 +1,39 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.12.0/schema.json",
+  "name": "49a8d8f6d9594710928a",
+  "position": {
+    "x": 60,
+    "y": 384,
+    "z": 1002,
+    "height": 154,
+    "width": 431,
+    "tabOrder": 1002
+  },
+  "visual": {
+    "visualType": "card",
+    "query": {
+      "queryState": {
+        "Values": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Medidas"
+                    }
+                  },
+                  "Property": "Títulos licenciados"
+                }
+              },
+              "queryRef": "_Medidas.Títulos licenciados",
+              "nativeQueryRef": "Títulos licenciados",
+              "displayName": "TÍTULOS NO CATÁLOGO"
+            }
+          ]
+        }
+      }
+    },
+    "drillFilterOtherVisuals": true
+  }
+}

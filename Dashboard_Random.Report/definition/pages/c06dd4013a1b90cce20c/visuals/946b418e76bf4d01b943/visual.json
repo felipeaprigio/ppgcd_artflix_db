@@ -1,0 +1,39 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.12.0/schema.json",
+  "name": "946b418e76bf4d01b943",
+  "position": {
+    "x": 60,
+    "y": 384,
+    "z": 1002,
+    "height": 154,
+    "width": 431,
+    "tabOrder": 1002
+  },
+  "visual": {
+    "visualType": "card",
+    "query": {
+      "queryState": {
+        "Values": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Medidas"
+                    }
+                  },
+                  "Property": "Base no fim do mês"
+                }
+              },
+              "queryRef": "_Medidas.Base no fim do mês",
+              "nativeQueryRef": "Base no fim do mês",
+              "displayName": "ASSINATURAS ATIVAS"
+            }
+          ]
+        }
+      }
+    },
+    "drillFilterOtherVisuals": true
+  }
+}

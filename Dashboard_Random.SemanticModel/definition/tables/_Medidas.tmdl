@@ -1,0 +1,483 @@
+table _Medidas
+	lineageTag: 339fdfd2-7f62-4764-aec0-8e0ad957e7d0
+
+	measure 'Assinaturas ativas' = ```
+			
+			        CALCULATE ( COUNTROWS ( assinatura ), ISBLANK ( assinatura[data_cancelamento] ) )
+			```
+		formatString: 0
+		lineageTag: 982f810d-fecc-479d-a4f6-ab5540ff5435
+
+	measure 'Receita mensal (R$)' = ```
+			
+			        CALCULATE (
+			            SUM ( assinatura[valor_contratado] ),
+			            assinatura[moeda] = "BRL",
+			            ISBLANK ( assinatura[data_cancelamento] )
+			        )
+			```
+		formatString: "R$"\ #,0.00;-"R$"\ #,0.00;"R$"\ #,0.00
+		lineageTag: 53e33576-0f1f-4aaf-8de5-dc95025c7f6e
+
+		annotation PBI_FormatHint = {"currencyCulture":"pt-BR"}
+
+	measure 'ARPU Brasil' = ```
+			
+			        CALCULATE (
+			            AVERAGE ( assinatura[valor_contratado] ),
+			            assinatura[moeda] = "BRL",
+			            ISBLANK ( assinatura[data_cancelamento] )
+			        )
+			```
+		formatString: "R$"\ #,0.00;-"R$"\ #,0.00;"R$"\ #,0.00
+		lineageTag: 9aadf381-dc68-48e5-91a8-739ac27d4a5a
+
+		annotation PBI_FormatHint = {"currencyCulture":"pt-BR"}
+
+	measure 'Base no fim do mês' =
+			VAR fim = MAX ( Calendario[Data] ) + 1
+			RETURN
+			    COUNTROWS (
+			        FILTER (
+			            assinatura,
+			            assinatura[data_inicio] < fim
+			                && ( ISBLANK ( assinatura[data_cancelamento] ) || assinatura[data_cancelamento] >= fim )
+			        )
+			    )
+		formatString: #,0
+		lineageTag: 7239ee78-ac1c-4d3a-8a73-b8b70ea95d44
+
+	measure 'Base no início do mês' = ```
+			
+			        VAR ini = MIN ( Calendario[Data] )
+			        RETURN
+			            COUNTROWS (
+			                FILTER (
+			                    assinatura,
+			                    assinatura[data_inicio] < ini
+			                        && ( ISBLANK ( assinatura[data_cancelamento] )
+			                             || assinatura[data_cancelamento] >= ini )
+			                )
+			            )
+			```
+		formatString: 0
+		lineageTag: db7e0bee-6b7a-4036-8087-b298233f214f
+
+	measure 'Cancelamentos no período' = ```
+			
+			        VAR ini = MIN ( Calendario[Data] )
+			        VAR fim = MAX ( Calendario[Data] ) + 1
+			        RETURN
+			            COUNTROWS (
+			                FILTER (
+			                    assinatura,
+			                    assinatura[data_cancelamento] >= ini
+			                        && assinatura[data_cancelamento] < fim
+			                )
+			            )
+			```
+		formatString: 0
+		lineageTag: 970f97c3-986b-43f7-8cb0-e44208ce9092
+
+	measure 'Churn mensal %' =
+			VAR meses = VALUES ( Calendario[Mês nº] )
+			RETURN
+			    DIVIDE (
+			        SUMX ( meses, [Cancelamentos no período] ),
+			        SUMX ( meses, [Base no início do mês] )
+			    )
+		formatString: 0.00%;-0.00%;0.00%
+		lineageTag: 218b0d55-4a71-4f19-83aa-80339d9e4917
+
+	measure 'Churn no ano %' = ```
+			
+			        DIVIDE (
+			            CALCULATE ( COUNTROWS ( assinatura ), NOT ISBLANK ( assinatura[data_cancelamento] ) ),
+			            COUNTROWS ( assinatura )
+			        )
+			```
+		formatString: 0.0%;-0.0%;0.0%
+		lineageTag: 37cc46c4-7b6b-442b-b9f2-8c1edc9b0177
+
+	measure Sessões = ```
+			
+			        COUNTROWS ( sessoes )
+			```
+		formatString: 0
+		lineageTag: f1577303-727a-4c4e-b77e-6e06c50018b1
+
+	measure 'Horas assistidas' = ```
+			
+			        DIVIDE ( SUM ( sessoes[segundos_assistidos] ), 3600 )
+			```
+		formatString: 0
+		lineageTag: 64a7a9a4-1d81-4374-a5db-985f6823f45d
+
+	measure 'Perfis que assistiram' = ```
+			
+			        DISTINCTCOUNT ( sessoes[cod_perfil] )
+			```
+		formatString: 0
+		lineageTag: 0b7e1fc0-24c9-42ce-8415-93d29cda2cd4
+
+	measure 'Taxa de conclusão %' = ```
+			
+			        DIVIDE (
+			            COUNTROWS (
+			                FILTER (
+			                    sessoes,
+			                    sessoes[segundos_assistidos] >= 0.85 * RELATED ( titulo[duracao_segundos] )
+			                )
+			            ),
+			            COUNTROWS ( sessoes )
+			        )
+			```
+		formatString: 0.0%;-0.0%;0.0%
+		lineageTag: 71a28c0f-c9e2-4e12-ae9e-55dc59b48d91
+
+	measure 'Média de sessões por dia' = ```
+			
+			        DIVIDE ( [Sessões], DISTINCTCOUNT ( Calendario[Data] ) )
+			```
+		formatString: 0
+		lineageTag: 15197b4a-8e97-4c4e-8331-59d60bff3faa
+
+	measure 'Títulos no catálogo' = ```
+			
+			        COUNTROWS ( titulo )
+			```
+		formatString: 0
+		lineageTag: 480080d4-ae06-42bb-ba91-00862055311c
+
+	measure 'Janelas vigentes' =
+			VAR fim = MAX ( Calendario[Data] )
+			RETURN
+			    COUNTROWS ( FILTER ( janela, janela[data_inicio] <= fim && janela[data_fim] >= fim ) ) + 0
+		formatString: #,0
+		lineageTag: fd036b29-82ba-4cc9-9c6d-45453cf103a5
+
+	measure 'Investimento em licenças (R$)' = ```
+			
+			        SUM ( janela[valor_licenca] )
+			```
+		formatString: "R$"\ #,0.00;-"R$"\ #,0.00;"R$"\ #,0.00
+		lineageTag: f2e29173-cda8-497c-b982-4c5edef44e8d
+
+		annotation PBI_FormatHint = {"currencyCulture":"pt-BR"}
+
+	measure 'Custo por hora assistida (R$)' = ```
+			
+			        DIVIDE ( [Investimento em licenças (R$)], [Horas assistidas] )
+			```
+		lineageTag: 638126e6-4215-4171-90bb-d6b2a2a248fb
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Exibições fora da janela' = ```
+			
+			        SUM ( sessoes[Fora da janela] )
+			```
+		formatString: 0
+		lineageTag: 81cc351f-d302-4be5-a8ab-ee52c8b4d395
+
+	measure '% da audiência' = ```
+			
+			        DIVIDE ( [Sessões], CALCULATE ( [Sessões], ALL ( titulo ) ) )
+			```
+		formatString: 0.0%;-0.0%;0.0%
+		lineageTag: cc9c52d8-cf86-40bf-9c1d-1af58419518a
+
+	measure '% metadado completo' = ```
+			
+			        DIVIDE (
+			            COUNTROWS (
+			                FILTER (
+			                    titulo,
+			                    NOT ISBLANK ( titulo[sinopse] )
+			                        && NOT ISBLANK ( titulo[idioma_original] )
+			                        && NOT ISBLANK ( titulo[pais_origem] )
+			                )
+			            ),
+			            COUNTROWS ( titulo )
+			        )
+			```
+		formatString: 0.0%;-0.0%;0.0%
+		lineageTag: 7d074396-90b6-4698-962b-e12b8f18dd90
+
+	measure '% com sinopse' = ```
+			
+			        DIVIDE ( COUNTROWS ( FILTER ( titulo, NOT ISBLANK ( titulo[sinopse] ) ) ), COUNTROWS ( titulo ) )
+			```
+		formatString: 0.0%;-0.0%;0.0%
+		lineageTag: ad51eba0-169a-473f-a031-3fbaa337ada7
+
+	measure '% com idioma' = ```
+			
+			        DIVIDE ( COUNTROWS ( FILTER ( titulo, NOT ISBLANK ( titulo[idioma_original] ) ) ), COUNTROWS ( titulo ) )
+			```
+		formatString: 0.0%;-0.0%;0.0%
+		lineageTag: 5243f80f-6c63-4ca0-95ce-505c0fbcae1d
+
+	measure '% com país de origem' = ```
+			
+			        DIVIDE ( COUNTROWS ( FILTER ( titulo, NOT ISBLANK ( titulo[pais_origem] ) ) ), COUNTROWS ( titulo ) )
+			```
+		formatString: 0.0%;-0.0%;0.0%
+		lineageTag: bab60176-5802-4d17-acd3-479d54071d8b
+
+	measure 'Sessões sem perfil' = ```
+			
+			        COUNTROWS ( FILTER ( sessoes, ISBLANK ( RELATED ( perfil[cod_perfil] ) ) ) ) + 0
+			```
+		formatString: 0
+		lineageTag: aee60c08-7c55-496d-87b6-89d44bcd8c6d
+
+	measure 'Assinaturas sem assinante' = ```
+			
+			        COUNTROWS ( FILTER ( assinatura, ISBLANK ( RELATED ( assinante[cod_assinante] ) ) ) ) + 0
+			```
+		formatString: 0
+		lineageTag: 8100ad4b-db1e-46df-a488-adf67ea04eb4
+
+	measure 'Registros órfãos' = ```
+			
+			        [Sessões sem perfil] + [Assinaturas sem assinante]
+			```
+		formatString: 0
+		lineageTag: 76b4e6a1-94e7-4edc-8b4c-8fcba2da8cf0
+
+	measure 'Violações de classificação' = ```
+			
+			        COUNTROWS (
+			            FILTER (
+			                sessoes,
+			                RELATED ( titulo[Idade mínima] ) > RELATED ( perfil[Idade permitida] )
+			            )
+			        ) + 0
+			```
+		formatString: 0
+		lineageTag: c2892b5f-3aa1-48c5-a9dc-5fffcd42e9d4
+
+	measure 'Sessões abaixo de 60 s' = ```
+			
+			        COUNTROWS ( FILTER ( sessoes, sessoes[segundos_assistidos] < 60 ) ) + 0
+			```
+		formatString: 0
+		lineageTag: c0309eac-c186-466a-977f-4cba2d88b35b
+
+	measure 'Titulares anonimizados' =
+			VAR ini = MIN ( Calendario[Data] )
+			VAR fim = MAX ( Calendario[Data] )
+			RETURN
+			    CALCULATE (
+			        COUNTROWS ( assinante ),
+			        assinante[situacao_cadastro] = "ANONIMIZADO",
+			        assinante[data_anonimizacao] >= ini,
+			        assinante[data_anonimizacao] < fim + 1,
+			        CROSSFILTER ( assinatura[cod_assinante], assinante[cod_assinante], BOTH )
+			    ) + 0
+		formatString: #,0
+		lineageTag: 1b791374-9b77-41f9-ab38-6a7ab51c215f
+
+	measure 'Prazo médio LGPD (dias)' =
+			VAR ini = MIN ( Calendario[Data] )
+			VAR fim = MAX ( Calendario[Data] )
+			RETURN
+			    CALCULATE (
+			        AVERAGEX (
+			            FILTER ( assinante, NOT ISBLANK ( assinante[data_anonimizacao] ) ),
+			            DATEDIFF ( assinante[data_solicitacao_exclusao], assinante[data_anonimizacao], DAY )
+			        ),
+			        assinante[data_anonimizacao] >= ini,
+			        assinante[data_anonimizacao] < fim + 1,
+			        CROSSFILTER ( assinatura[cod_assinante], assinante[cod_assinante], BOTH )
+			    )
+		formatString: 0.0
+		lineageTag: d541b9a1-5013-45f5-9c17-a4f2466394cb
+
+	measure '% sessões identificáveis' = ```
+			
+			        DIVIDE ( COUNTROWS ( FILTER ( sessoes, ISBLANK ( sessoes[data_anonimizacao] ) ) ), COUNTROWS ( sessoes ) )
+			```
+		formatString: 0.0%;-0.0%;0.0%
+		lineageTag: 4b0d7142-c35a-43e1-acd0-382b558a827b
+
+	measure '% logins com geolocalização' = ```
+			
+			        DIVIDE ( COUNTROWS ( FILTER ( login, login[indicador_gps] + 0 = 1 ) ), COUNTROWS ( login ) )
+			```
+		formatString: 0.0%;-0.0%;0.0%
+		lineageTag: e98fafb7-699c-434c-a3cb-020c20be74b3
+
+	measure 'Sessões (Top 10)' = IF ( RANKX ( ALLSELECTED ( titulo[nome_titulo] ), [Sessões], , DESC ) <= 10, [Sessões] )
+		formatString: #,0
+		lineageTag: 3408b0a3-3ccf-400b-83ca-5575e1ff4873
+
+	measure 'Custo por hora (Top 10)' = IF ( NOT ISBLANK ( [Custo por hora assistida (R$)] ) && RANKX ( ALLSELECTED ( titulo[nome_titulo] ), [Custo por hora assistida (R$)], , DESC ) <= 10, [Custo por hora assistida (R$)] )
+		formatString: "R$"\ #,0.00;-"R$"\ #,0.00;"R$"\ #,0.00
+		lineageTag: b762fc34-6d50-47da-ab37-4ae57c9685ce
+
+		annotation PBI_FormatHint = {"currencyCulture":"pt-BR"}
+
+	measure '% da receita' = DIVIDE ( [Receita mensal (R$)], CALCULATE ( [Receita mensal (R$)], ALL ( plano ) ) )
+		formatString: 0%;-0%;0%
+		lineageTag: 737e8124-1a1e-4531-9979-315c9bc420a2
+
+	measure '% metadado completo (gênero)' = CALCULATE ( [% metadado completo], CROSSFILTER ( titulo_genero[cod_titulo], titulo[cod_titulo], BOTH ) )
+		formatString: 0%;-0%;0%
+		lineageTag: 34f6f891-155d-4956-8301-d092a45e88be
+
+	measure 'Sessões na janela (90 dias)' = IF ( NOT ISBLANK ( [Dias para vencer (90 dias)] ), SUM ( janela[Sessões na janela] ) + 0 )
+		formatString: #,0
+		lineageTag: b8c07083-c654-467a-9f2e-481a7c96b141
+
+	measure 'Exibições fora (lista)' = VAR n = SUM ( sessoes[Fora da janela] ) RETURN IF ( n > 0, n )
+		formatString: 0
+		lineageTag: f2d5953e-2398-4e0c-9c1c-61f2e8bf027e
+
+	measure 'Receita mensal (US$)' =
+			VAR fim = MAX ( Calendario[Data] )
+			VAR comp = FORMAT ( fim, "yyyy-MM" )
+			VAR ativos =
+			    FILTER (
+			        assinatura,
+			        assinatura[data_inicio] < fim + 1
+			            && ( ISBLANK ( assinatura[data_cancelamento] ) || assinatura[data_cancelamento] >= fim + 1 )
+			    )
+			VAR porMoeda =
+			    GROUPBY ( ativos, assinatura[moeda], "@valor", SUMX ( CURRENTGROUP (), assinatura[valor_contratado] ) )
+			RETURN
+			    SUMX (
+			        porMoeda,
+			        [@valor] / LOOKUPVALUE ( cotacao[taxa_usd], cotacao[moeda], assinatura[moeda], cotacao[competencia], comp )
+			    )
+		formatString: "US$"\ #,0;-"US$"\ #,0;"US$"\ #,0
+		lineageTag: 1036090b-d86f-4f60-89b4-468b08b9f7f8
+
+	measure 'ARPU (US$)' = DIVIDE ( [Receita mensal (US$)], [Base no fim do mês] )
+		formatString: "US$"\ #,0.00;-"US$"\ #,0.00;"US$"\ #,0.00
+		lineageTag: f1d65ac3-83e9-4427-80d9-effd71815bb4
+
+	measure 'Receita no período (US$)' =
+			VAR t =
+			    CALCULATETABLE (
+			        SUMMARIZE ( cobranca, cobranca[competencia], cobranca[moeda] ),
+			        TREATAS ( VALUES ( Calendario[Competência] ), cobranca[competencia] )
+			    )
+			RETURN
+			    SUMX (
+			        t,
+			        CALCULATE ( SUM ( cobranca[valor_cobrado] ) )
+			            / LOOKUPVALUE ( cotacao[taxa_usd], cotacao[moeda], cobranca[moeda], cotacao[competencia], cobranca[competencia] )
+			    )
+		formatString: "US$"\ #,0.00;-"US$"\ #,0.00;"US$"\ #,0.00
+		lineageTag: b05cb434-283c-49c8-b37b-e27a54108ee8
+
+	measure 'Receita no período (US$ mi)' = DIVIDE ( [Receita no período (US$)], 1000000 )
+		formatString: 0.0" mi"
+		lineageTag: a461688a-4985-49b7-b57b-6cb0b1c54f8a
+
+	measure 'Custo de licenças no período (US$)' =
+			VAR ini = MIN ( Calendario[Data] )
+			VAR fim = MAX ( Calendario[Data] )
+			RETURN
+			    SUMX (
+			        janela,
+			        VAR a = MAX ( janela[data_inicio], ini )
+			        VAR b = MIN ( janela[data_fim], fim )
+			        VAR dias = INT ( b - a ) + 1
+			        RETURN
+			            IF ( dias > 0, janela[Valor licença (US$)] * dias / ( INT ( janela[data_fim] - janela[data_inicio] ) + 1 ) )
+			    )
+		formatString: "US$"\ #,0.00;-"US$"\ #,0.00;"US$"\ #,0.00
+		lineageTag: b397e03c-233b-48c0-9522-2c5ecff84bcc
+
+	measure 'Custo por hora assistida (US$)' = DIVIDE ( [Custo de licenças no período (US$)], [Horas assistidas] )
+		formatString: "US$"\ #,0.00;-"US$"\ #,0.00;"US$"\ #,0.00
+		lineageTag: a22fc206-ba64-43cb-ac88-b41a81e6e7f8
+
+	measure 'Custo por hora US$ (Top 10)' =
+			IF (
+			    NOT ISBLANK ( [Custo por hora assistida (US$)] )
+			        && RANKX ( ALLSELECTED ( titulo[nome_titulo] ), [Custo por hora assistida (US$)], , DESC ) <= 10,
+			    [Custo por hora assistida (US$)]
+			)
+		formatString: "US$"\ #,0.00;-"US$"\ #,0.00;"US$"\ #,0.00
+		lineageTag: d742df68-8874-4cd2-a92e-050f19616eea
+
+	measure 'Títulos licenciados' =
+			VAR ini = MIN ( Calendario[Data] )
+			VAR fim = MAX ( Calendario[Data] )
+			RETURN
+			    CALCULATE (
+			        DISTINCTCOUNT ( janela[cod_titulo] ),
+			        FILTER ( janela, janela[data_inicio] <= fim && janela[data_fim] >= ini )
+			    ) + 0
+		formatString: #,0
+		lineageTag: 6fbdf357-a929-45f8-91aa-b3db12921ae3
+
+	measure 'Dias para vencer (90 dias)' =
+			VAR fim = MAX ( Calendario[Data] )
+			VAR d = INT ( MAX ( janela[data_fim] ) - fim )
+			RETURN
+			    IF ( HASONEVALUE ( janela[cod_janela] ) && d >= 0 && d <= 90, d )
+		formatString: 0
+		lineageTag: d55ab375-dc4c-499f-b606-1e4fab9046a8
+
+	measure 'Incidentes OE4' =
+			VAR ini = MIN ( Calendario[Data] )
+			VAR fim = MAX ( Calendario[Data] )
+			RETURN
+			    COUNTROWS (
+			        FILTER ( janela, janela[Exibições fora] > 0 && janela[data_fim] + 1 >= ini && janela[data_fim] + 1 <= fim )
+			    ) + 0
+		formatString: 0
+		lineageTag: 3a64ce5b-2a48-4e70-9eae-e92d01d79dbd
+
+	measure 'Exibições OE4 (lista)' =
+			VAR ini = MIN ( Calendario[Data] )
+			VAR fim = MAX ( Calendario[Data] )
+			VAR n =
+			    SUMX (
+			        FILTER ( janela, janela[data_fim] + 1 >= ini && janela[data_fim] + 1 <= fim ),
+			        janela[Exibições fora]
+			    )
+			RETURN
+			    IF ( n > 0, n )
+		formatString: #,0
+		lineageTag: b3fc14ec-5f06-45d6-b104-b1ed803e9532
+
+	measure '% completo' = [% metadado completo]
+		formatString: 0.0%;-0.0%;0.0%
+		lineageTag: a41705f2-409f-458d-b228-ef4d8d3c9893
+
+	measure '% sem metadado' = IF ( COUNTROWS ( titulo ) > 0, 1 - [% metadado completo] )
+		formatString: 0.0%;-0.0%;0.0%
+		lineageTag: fa55325e-bd62-4bc6-bb83-a8374e29c75d
+
+	measure 'Registros de uso anonimizados' =
+			CALCULATE ( COUNTROWS ( sessoes ), NOT ISBLANK ( sessoes[data_anonimizacao] ), REMOVEFILTERS ( Calendario ) )
+			    + CALCULATE ( COUNTROWS ( login ), NOT ISBLANK ( login[data_anonimizacao] ) )
+			    + CALCULATE ( COUNTROWS ( pesquisa ), NOT ISBLANK ( pesquisa[data_anonimizacao] ) ) + 0
+		formatString: #,0
+		lineageTag: 34bb5dfc-3b0b-4cf6-854e-e904ea839340
+
+	column 'Coluna 1'
+		dataType: string
+		lineageTag: 3807da0b-211b-4794-a80d-d0cf94f51e22
+		summarizeBy: none
+		sourceColumn: Coluna 1
+
+		annotation SummarizationSetBy = Automatic
+
+	partition _Medidas = m
+		mode: import
+		source =
+				let
+				    Fonte = Table.FromRows(Json.Document(Binary.Decompress(Binary.FromText("i44FAA==", BinaryEncoding.Base64), Compression.Deflate)), let _t = ((type nullable text) meta [Serialized.Text = true]) in type table [#"Coluna 1" = _t]),
+				    #"Tipo Alterado" = Table.TransformColumnTypes(Fonte,{{"Coluna 1", type text}})
+				in
+				    #"Tipo Alterado"
+
+	annotation PBI_ResultType = Table
+

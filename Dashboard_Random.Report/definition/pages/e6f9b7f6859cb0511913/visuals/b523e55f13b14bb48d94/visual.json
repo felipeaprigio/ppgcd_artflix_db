@@ -1,0 +1,39 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.12.0/schema.json",
+  "name": "b523e55f13b14bb48d94",
+  "position": {
+    "x": 1058,
+    "y": 384,
+    "z": 1004,
+    "height": 154,
+    "width": 431,
+    "tabOrder": 1004
+  },
+  "visual": {
+    "visualType": "card",
+    "query": {
+      "queryState": {
+        "Values": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Medidas"
+                    }
+                  },
+                  "Property": "Custo de licenças no período (US$)"
+                }
+              },
+              "queryRef": "_Medidas.Custo de licenças no período (US$)",
+              "nativeQueryRef": "Custo de licenças no período (US$)",
+              "displayName": "CUSTO DAS LICENÇAS (US$)"
+            }
+          ]
+        }
+      }
+    },
+    "drillFilterOtherVisuals": true
+  }
+}

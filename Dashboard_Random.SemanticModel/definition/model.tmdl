@@ -1,0 +1,72 @@
+model Model
+	culture: pt-BR
+	defaultPowerBIDataSourceVersion: powerBI_V3
+	sourceQueryCulture: pt-BR
+	valueFilterBehavior: independent
+	dataAccessOptions
+		legacyRedirects
+		returnErrorValuesAsNull
+
+annotation __PBI_TimeIntelligenceEnabled = 1
+
+annotation PBI_QueryOrder = ["assinante","assinatura","avaliacao","classificacao","contrato","cobranca","dispositivo","endereco","fornecedor","genero","historico","janela","login","pais","perfil","plano","pesquisa","plano_pais","sessoes","status","titulo","titulo_genero","_Medidas","cotacao"]
+
+annotation PBI_ProTooling = ["DaxQueryView_Desktop","DevMode"]
+
+ref table assinante
+ref table DateTableTemplate_bdd34afd-8801-4402-a7a3-22e4ea8a9a19
+ref table LocalDateTable_6b8f92a3-7389-4407-92b1-1c2b78088f42
+ref table LocalDateTable_92133e32-3035-429a-b7fe-736db1b74b40
+ref table LocalDateTable_087d8222-d7ad-49ec-9062-3d3b73eafaec
+ref table LocalDateTable_d97d71f0-4f2e-4433-a1d8-6eda117ceb94
+ref table assinatura
+ref table LocalDateTable_684def72-fac7-4a63-886f-91c4f9394742
+ref table LocalDateTable_b348c280-cfbb-4b4a-b827-3ef02187d14c
+ref table LocalDateTable_a73d49a7-5a43-483b-bd95-b536144633a2
+ref table avaliacao
+ref table LocalDateTable_9034aa26-57c7-4f56-8015-4269a4476fdf
+ref table classificacao
+ref table contrato
+ref table LocalDateTable_73a1021a-568c-4c6e-b2f6-ae215252c565
+ref table LocalDateTable_a0803a8d-44fb-413c-969e-128fc0a19b4b
+ref table LocalDateTable_d3633b61-f2fd-4fcd-a198-8cc356cd94f6
+ref table cobranca
+ref table LocalDateTable_e528b52b-5968-4ce6-828e-db30ef2361d5
+ref table LocalDateTable_d5e4aa1d-e849-45db-a013-518544ff08f8
+ref table dispositivo
+ref table endereco
+ref table fornecedor
+ref table genero
+ref table historico
+ref table LocalDateTable_5a683e2e-2f87-42c9-8248-640e7b3461d2
+ref table janela
+ref table LocalDateTable_7207f18b-e6ca-4883-8cd0-495a8f847a3c
+ref table LocalDateTable_170ec4f2-78dd-4c2f-a04a-912ac855ac0c
+ref table login
+ref table LocalDateTable_bad8b44d-d850-4bf9-ab54-63111a832d3a
+ref table LocalDateTable_d2d99e69-f871-4e63-8524-6c3cedccab1b
+ref table pais
+ref table perfil
+ref table LocalDateTable_27e67ac1-d65a-4e9b-9bd4-5d029dcec3cd
+ref table LocalDateTable_55008e82-b3dc-4b00-9c00-d7bab10bdc0e
+ref table plano
+ref table pesquisa
+ref table LocalDateTable_f1a41ee8-03ae-4964-8028-434e333797f4
+ref table LocalDateTable_faf484af-e7cf-40cb-b1f5-0d4bbaabdec4
+ref table plano_pais
+ref table sessoes
+ref table LocalDateTable_6c7b4799-040c-4d34-a61d-d6831bbd63b1
+ref table LocalDateTable_5e87459d-45ff-4f28-9c52-50f8e00e2cc4
+ref table status
+ref table titulo
+ref table titulo_genero
+ref table Calendario
+ref table LocalDateTable_ea165779-9290-4fc5-9058-947f2388cf76
+ref table LocalDateTable_420df278-38b1-4165-91ab-9dbb984c5f1f
+ref table LocalDateTable_7d937a1a-7bd5-4487-a3fc-ec09eff609b6
+ref table _Medidas
+ref table 'Uso das janelas'
+ref table cotacao
+
+ref cultureInfo pt-BR
+

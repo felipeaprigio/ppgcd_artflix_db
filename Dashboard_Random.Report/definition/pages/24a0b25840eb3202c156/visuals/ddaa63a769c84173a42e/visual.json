@@ -1,0 +1,39 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.12.0/schema.json",
+  "name": "ddaa63a769c84173a42e",
+  "position": {
+    "x": 559,
+    "y": 384,
+    "z": 1003,
+    "height": 154,
+    "width": 431,
+    "tabOrder": 1003
+  },
+  "visual": {
+    "visualType": "card",
+    "query": {
+      "queryState": {
+        "Values": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Medidas"
+                    }
+                  },
+                  "Property": "Horas assistidas"
+                }
+              },
+              "queryRef": "_Medidas.Horas assistidas",
+              "nativeQueryRef": "Horas assistidas",
+              "displayName": "HORAS ASSISTIDAS"
+            }
+          ]
+        }
+      }
+    },
+    "drillFilterOtherVisuals": true
+  }
+}

@@ -1,0 +1,164 @@
+-- ARTFLIX - criacao das 32 medidas de uma so vez
+-- Cole na Exibicao de consulta DAX e clique em "Atualizar modelo: Adicionar 32 novas medidas".
+-- Pre-requisito: tabela _Medidas, Calendario e as colunas calculadas ja criadas.
+
+DEFINE
+
+    -- ---------------- Visão executiva
+    MEASURE '_Medidas'[Assinaturas ativas] =
+        CALCULATE ( COUNTROWS ( assinatura ), ISBLANK ( assinatura[data_cancelamento] ) )
+    MEASURE '_Medidas'[Receita mensal (R$)] =
+        CALCULATE (
+            SUM ( assinatura[valor_contratado] ),
+            assinatura[moeda] = "BRL",
+            ISBLANK ( assinatura[data_cancelamento] )
+        )
+    MEASURE '_Medidas'[ARPU Brasil] =
+        CALCULATE (
+            AVERAGE ( assinatura[valor_contratado] ),
+            assinatura[moeda] = "BRL",
+            ISBLANK ( assinatura[data_cancelamento] )
+        )
+    MEASURE '_Medidas'[Base no fim do mês] =
+        VAR fim = MAX ( Calendario[Data] )
+        RETURN
+            COUNTROWS (
+                FILTER (
+                    assinatura,
+                    assinatura[data_inicio] <= fim
+                        && ( ISBLANK ( assinatura[data_cancelamento] )
+                             || assinatura[data_cancelamento] > fim )
+                )
+            )
+    MEASURE '_Medidas'[Base no início do mês] =
+        VAR ini = MIN ( Calendario[Data] )
+        RETURN
+            COUNTROWS (
+                FILTER (
+                    assinatura,
+                    assinatura[data_inicio] < ini
+                        && ( ISBLANK ( assinatura[data_cancelamento] )
+                             || assinatura[data_cancelamento] >= ini )
+                )
+            )
+    MEASURE '_Medidas'[Cancelamentos no período] =
+        VAR ini = MIN ( Calendario[Data] )
+        VAR fim = MAX ( Calendario[Data] ) + 1
+        RETURN
+            COUNTROWS (
+                FILTER (
+                    assinatura,
+                    assinatura[data_cancelamento] >= ini
+                        && assinatura[data_cancelamento] < fim
+                )
+            )
+    MEASURE '_Medidas'[Churn mensal %] =
+        AVERAGEX (
+            VALUES ( Calendario[Mês nº] ),
+            DIVIDE ( [Cancelamentos no período], [Base no início do mês] )
+        )
+    MEASURE '_Medidas'[Churn no ano %] =
+        DIVIDE (
+            CALCULATE ( COUNTROWS ( assinatura ), NOT ISBLANK ( assinatura[data_cancelamento] ) ),
+            COUNTROWS ( assinatura )
+        )
+
+    -- ---------------- Audiência
+    MEASURE '_Medidas'[Sessões] =
+        COUNTROWS ( sessoes )
+    MEASURE '_Medidas'[Horas assistidas] =
+        DIVIDE ( SUM ( sessoes[segundos_assistidos] ), 3600 )
+    MEASURE '_Medidas'[Perfis que assistiram] =
+        DISTINCTCOUNT ( sessoes[cod_perfil] )
+    MEASURE '_Medidas'[Taxa de conclusão %] =
+        DIVIDE (
+            COUNTROWS (
+                FILTER (
+                    sessoes,
+                    sessoes[segundos_assistidos] >= 0.85 * RELATED ( titulo[duracao_segundos] )
+                )
+            ),
+            COUNTROWS ( sessoes )
+        )
+    MEASURE '_Medidas'[Média de sessões por dia] =
+        DIVIDE ( [Sessões], DISTINCTCOUNT ( Calendario[Data] ) )
+
+    -- ---------------- Catálogo e direitos
+    MEASURE '_Medidas'[Títulos no catálogo] =
+        COUNTROWS ( titulo )
+    MEASURE '_Medidas'[Janelas vigentes] =
+        COUNTROWS (
+            FILTER (
+                janela,
+                janela[data_inicio] <= DATE ( 2025, 12, 31 )
+                    && janela[data_fim] >= DATE ( 2025, 12, 31 )
+            )
+        )
+    MEASURE '_Medidas'[Investimento em licenças (R$)] =
+        SUM ( janela[valor_licenca] )
+    MEASURE '_Medidas'[Custo por hora assistida (R$)] =
+        DIVIDE ( [Investimento em licenças (R$)], [Horas assistidas] )
+    MEASURE '_Medidas'[Exibições fora da janela] =
+        SUM ( sessoes[Fora da janela] )
+    MEASURE '_Medidas'[% da audiência] =
+        DIVIDE ( [Sessões], CALCULATE ( [Sessões], ALL ( titulo ) ) )
+
+    -- ---------------- Qualidade dos dados
+    MEASURE '_Medidas'[% metadado completo] =
+        DIVIDE (
+            COUNTROWS (
+                FILTER (
+                    titulo,
+                    NOT ISBLANK ( titulo[sinopse] )
+                        && NOT ISBLANK ( titulo[idioma_original] )
+                        && NOT ISBLANK ( titulo[pais_origem] )
+                )
+            ),
+            COUNTROWS ( titulo )
+        )
+    MEASURE '_Medidas'[% com sinopse] =
+        DIVIDE ( COUNTROWS ( FILTER ( titulo, NOT ISBLANK ( titulo[sinopse] ) ) ), COUNTROWS ( titulo ) )
+    MEASURE '_Medidas'[% com idioma] =
+        DIVIDE ( COUNTROWS ( FILTER ( titulo, NOT ISBLANK ( titulo[idioma_original] ) ) ), COUNTROWS ( titulo ) )
+    MEASURE '_Medidas'[% com país de origem] =
+        DIVIDE ( COUNTROWS ( FILTER ( titulo, NOT ISBLANK ( titulo[pais_origem] ) ) ), COUNTROWS ( titulo ) )
+    MEASURE '_Medidas'[Sessões sem perfil] =
+        COUNTROWS ( FILTER ( sessoes, ISBLANK ( RELATED ( perfil[cod_perfil] ) ) ) ) + 0
+    MEASURE '_Medidas'[Assinaturas sem assinante] =
+        COUNTROWS ( FILTER ( assinatura, ISBLANK ( RELATED ( assinante[cod_assinante] ) ) ) ) + 0
+    MEASURE '_Medidas'[Registros órfãos] =
+        [Sessões sem perfil] + [Assinaturas sem assinante]
+    MEASURE '_Medidas'[Violações de classificação] =
+        COUNTROWS (
+            FILTER (
+                sessoes,
+                RELATED ( titulo[Idade mínima] ) > RELATED ( perfil[Idade permitida] )
+            )
+        ) + 0
+    MEASURE '_Medidas'[Sessões abaixo de 60 s] =
+        COUNTROWS ( FILTER ( sessoes, sessoes[segundos_assistidos] < 60 ) ) + 0
+    MEASURE '_Medidas'[Titulares anonimizados] =
+        CALCULATE ( COUNTROWS ( assinante ), assinante[situacao_cadastro] = "ANONIMIZADO" ) + 0
+    MEASURE '_Medidas'[Prazo médio LGPD (dias)] =
+        AVERAGEX (
+            FILTER ( assinante, NOT ISBLANK ( assinante[data_anonimizacao] ) ),
+            DATEDIFF ( assinante[data_solicitacao_exclusao], assinante[data_anonimizacao], DAY )
+        )
+    MEASURE '_Medidas'[% sessões identificáveis] =
+        DIVIDE ( COUNTROWS ( FILTER ( sessoes, ISBLANK ( sessoes[data_anonimizacao] ) ) ), COUNTROWS ( sessoes ) )
+    MEASURE '_Medidas'[% logins com geolocalização] =
+        DIVIDE ( COUNTROWS ( FILTER ( login, login[indicador_gps] + 0 = 1 ) ), COUNTROWS ( login ) )
+
+-- Conferencia: os valores esperados estao ao lado de cada linha
+EVALUATE
+    ROW (
+        "Assinaturas ativas", [Assinaturas ativas],
+        "ARPU Brasil (perto de 34)", [ARPU Brasil],
+        "Churn mensal (perto de 3 %)", [Churn mensal %],
+        "Sessoes (cerca de 80 mil)", [Sessões],
+        "Fora da janela (14)", [Exibições fora da janela],
+        "Metadado completo (62 %)", [% metadado completo],
+        "Registros orfaos (0)", [Registros órfãos],
+        "Violacoes de classificacao (0)", [Violações de classificação],
+        "Titulares anonimizados (5)", [Titulares anonimizados]
+    )

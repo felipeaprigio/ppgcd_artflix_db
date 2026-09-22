@@ -1,0 +1,112 @@
+table contrato
+	lineageTag: 0d219bf4-e57e-477b-b88b-da528681cf5c
+
+	column cod_contrato
+		dataType: int64
+		formatString: 0
+		lineageTag: 004bb33d-1701-4e8f-bfcd-811bd9286697
+		summarizeBy: none
+		sourceColumn: cod_contrato
+
+		annotation SummarizationSetBy = Automatic
+
+	column cod_fornecedor
+		dataType: int64
+		formatString: 0
+		lineageTag: 64b82dc7-bef2-4ade-8921-91876d915a92
+		summarizeBy: none
+		sourceColumn: cod_fornecedor
+
+		annotation SummarizationSetBy = Automatic
+
+	column numero_contrato
+		dataType: string
+		lineageTag: 427fbcc0-c4d3-4cfa-833a-527c8f5928d7
+		summarizeBy: none
+		sourceColumn: numero_contrato
+
+		annotation SummarizationSetBy = Automatic
+
+	column data_assinatura
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: 6c661e4c-c844-4cb3-9065-22044388152e
+		summarizeBy: none
+		sourceColumn: data_assinatura
+
+		variation Variation
+			isDefault
+			relationship: ac364400-7033-44fc-8c34-e96828cd71d2
+			defaultHierarchy: LocalDateTable_73a1021a-568c-4c6e-b2f6-ae215252c565.'Hierarquia de datas'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column data_inicio_vigencia
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: 4084f91e-7621-450d-9e63-85a9e66a2688
+		summarizeBy: none
+		sourceColumn: data_inicio_vigencia
+
+		variation Variation
+			isDefault
+			relationship: 292b8cdf-8055-4a74-83c6-cfacfa3678d7
+			defaultHierarchy: LocalDateTable_a0803a8d-44fb-413c-969e-128fc0a19b4b.'Hierarquia de datas'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column data_fim_vigencia
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: f02203bb-fdaa-463a-8321-bf3f57264c3f
+		summarizeBy: none
+		sourceColumn: data_fim_vigencia
+
+		variation Variation
+			isDefault
+			relationship: 4576e0b6-8370-4618-aca9-2c3c5fcec5e6
+			defaultHierarchy: LocalDateTable_d3633b61-f2fd-4fcd-a198-8cc356cd94f6.'Hierarquia de datas'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column valor_total
+		dataType: double
+		lineageTag: a55c58f8-132f-43ea-aff0-772e1385c732
+		summarizeBy: sum
+		sourceColumn: valor_total
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column moeda
+		dataType: string
+		lineageTag: 60b13628-5774-4b99-aa33-5452f13a6b13
+		summarizeBy: none
+		sourceColumn: moeda
+
+		annotation SummarizationSetBy = Automatic
+
+	column situacao_contrato
+		dataType: string
+		lineageTag: 0aed2f6b-c034-4564-9e57-43a6b410e7e3
+		summarizeBy: none
+		sourceColumn: situacao_contrato
+
+		annotation SummarizationSetBy = Automatic
+
+	partition contrato = m
+		mode: import
+		source =
+				let
+				    Fonte = MySQL.Database("localhost:3306", "ppgcd_artflix_random", [ReturnSingleDatabase=true]),
+				    ppgcd_artflix_random_contrato = Fonte{[Schema="ppgcd_artflix_random",Item="contrato"]}[Data]
+				in
+				    ppgcd_artflix_random_contrato
+

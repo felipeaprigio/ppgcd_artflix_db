@@ -1,0 +1,70 @@
+table plano
+	lineageTag: 9b491b11-9bf6-4f7e-86e0-0892a9c43bc0
+
+	column cod_plano
+		dataType: int64
+		formatString: 0
+		lineageTag: e9d02f57-6e86-49cc-952f-27cf8bb227cb
+		summarizeBy: none
+		sourceColumn: cod_plano
+
+		annotation SummarizationSetBy = Automatic
+
+	column nome_plano
+		dataType: string
+		lineageTag: 98b696f6-2e39-4a37-9927-2f75abf2ce23
+		summarizeBy: none
+		sourceColumn: nome_plano
+
+		annotation SummarizationSetBy = Automatic
+
+	column qtd_telas
+		dataType: int64
+		formatString: 0
+		lineageTag: c9363d3a-3449-450b-a66d-80ca539113cc
+		summarizeBy: sum
+		sourceColumn: qtd_telas
+
+		annotation SummarizationSetBy = Automatic
+
+	column resolucao_maxima
+		dataType: string
+		lineageTag: f7def863-e03c-417f-91c8-362b75a24e7b
+		summarizeBy: none
+		sourceColumn: resolucao_maxima
+
+		annotation SummarizationSetBy = Automatic
+
+	column descricao
+		dataType: string
+		lineageTag: 19a64995-ca2d-43e2-8dd0-d8f81ee963a7
+		summarizeBy: none
+		sourceColumn: descricao
+
+		annotation SummarizationSetBy = Automatic
+
+	column indicador_ativo
+		dataType: boolean
+		formatString: """TRUE"";""TRUE"";""FALSE"""
+		lineageTag: 675a5f6b-bcf3-4642-8c11-e48246b865eb
+		summarizeBy: none
+		sourceColumn: indicador_ativo
+
+		annotation SummarizationSetBy = Automatic
+
+	column Plano = SWITCH ( plano[nome_plano], "Basico", "Básico", "Padrao", "Padrão", plano[nome_plano] )
+		lineageTag: c21301ee-d2cd-46b0-b4fd-92c4659af51c
+		summarizeBy: none
+		sortByColumn: cod_plano
+
+		annotation SummarizationSetBy = Automatic
+
+	partition plano = m
+		mode: import
+		source =
+				let
+				    Fonte = MySQL.Database("localhost:3306", "ppgcd_artflix_random", [ReturnSingleDatabase=true]),
+				    ppgcd_artflix_random_plano = Fonte{[Schema="ppgcd_artflix_random",Item="plano"]}[Data]
+				in
+				    ppgcd_artflix_random_plano
+

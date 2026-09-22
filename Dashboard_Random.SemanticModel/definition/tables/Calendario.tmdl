@@ -1,0 +1,108 @@
+table Calendario
+	lineageTag: f2e57e04-d603-4dae-bf1a-94e8944667d7
+
+	column Data
+		formatString: General Date
+		lineageTag: 85efeeb9-b437-47b0-88a1-7aa2510c95bb
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [Data]
+
+		variation Variation
+			isDefault
+			relationship: ffb2397c-a729-445b-a5ed-c6b471075062
+			defaultHierarchy: LocalDateTable_ea165779-9290-4fc5-9058-947f2388cf76.'Hierarquia de datas'
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Mês nº'
+		formatString: 0
+		lineageTag: 69957851-96c1-464a-9f87-cbf361df0aa6
+		summarizeBy: sum
+		isNameInferred
+		sourceColumn: [Mês nº]
+
+		annotation SummarizationSetBy = Automatic
+
+	column Mês
+		lineageTag: 5485bbd7-2948-47f2-ab61-49be35a78425
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [Mês]
+		sortByColumn: 'Mês nº'
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Dia da semana nº'
+		formatString: 0
+		lineageTag: fdd900f0-c690-4856-8fb6-ce38d60091eb
+		summarizeBy: sum
+		isNameInferred
+		sourceColumn: [Dia da semana nº]
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Dia da semana'
+		lineageTag: 3b0e0955-8f5d-4d6b-a6d1-13381f617d6c
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [Dia da semana]
+		sortByColumn: 'Dia da semana nº'
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Tipo de dia'
+		lineageTag: c280c559-5870-4043-99fe-f9504877f27b
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [Tipo de dia]
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Trimestre nº'
+		formatString: 0
+		lineageTag: 43c72ed9-7421-4216-8097-f9e9c34dbea5
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [Trimestre nº]
+
+		annotation SummarizationSetBy = Automatic
+
+	column Trimestre
+		lineageTag: 6dbc506b-33e9-4640-850f-a6d87b518ea2
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [Trimestre]
+		sortByColumn: 'Trimestre nº'
+
+		annotation SummarizationSetBy = Automatic
+
+	column Competência
+		lineageTag: 96647c19-1bfc-40a6-8e22-c50dd96526e9
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [Competência]
+
+		annotation SummarizationSetBy = Automatic
+
+	partition Calendario = calculated
+		mode: import
+		source =
+				
+				VAR base = CALENDAR ( DATE ( 2023, 1, 1 ), DATE ( 2026, 9, 30 ) )
+				RETURN
+				    SELECTCOLUMNS (
+				        base,
+				        "Data", [Date],
+				        "Mês nº", YEAR ( [Date] ) * 100 + MONTH ( [Date] ),
+				        "Mês", FORMAT ( [Date], "mmm/yy" ),
+				        "Dia da semana nº", WEEKDAY ( [Date], 2 ),
+				        "Dia da semana", FORMAT ( [Date], "ddd" ),
+				        "Tipo de dia", IF ( WEEKDAY ( [Date], 2 ) >= 6, "Fim de semana", "Dia útil" ),
+				        "Trimestre nº", YEAR ( [Date] ) * 10 + QUARTER ( [Date] ),
+				        "Trimestre", YEAR ( [Date] ) & " · T" & QUARTER ( [Date] ),
+				        "Competência", FORMAT ( [Date], "yyyy-MM" )
+				    )
+
+	annotation PBI_Id = ee3dbf091218432a83a1afd53868489c
+

@@ -1,0 +1,75 @@
+table pesquisa
+	lineageTag: 3df370c9-b909-4966-bb99-335314f07975
+
+	column cod_pesquisa
+		dataType: int64
+		formatString: 0
+		lineageTag: 9d720dbc-3703-42da-a03a-491f19e05dda
+		summarizeBy: sum
+		sourceColumn: cod_pesquisa
+
+		annotation SummarizationSetBy = Automatic
+
+	column cod_perfil
+		dataType: int64
+		formatString: 0
+		lineageTag: 5238c87f-09dc-4c4e-995c-b5f955305109
+		summarizeBy: none
+		sourceColumn: cod_perfil
+
+		annotation SummarizationSetBy = Automatic
+
+	column termo_pesquisado
+		dataType: string
+		lineageTag: 0d743ad0-d37d-4285-963c-770fe912a29a
+		summarizeBy: none
+		sourceColumn: termo_pesquisado
+
+		annotation SummarizationSetBy = Automatic
+
+	column data_hora_pesquisa
+		dataType: dateTime
+		formatString: General Date
+		lineageTag: 80f7ae3c-52a8-4004-bcff-3796a58e2bcd
+		summarizeBy: none
+		sourceColumn: data_hora_pesquisa
+
+		variation Variation
+			isDefault
+			relationship: 58053f6a-efba-417f-99f3-1b460114e1e7
+			defaultHierarchy: LocalDateTable_f1a41ee8-03ae-4964-8028-434e333797f4.'Hierarquia de datas'
+
+		annotation SummarizationSetBy = Automatic
+
+	column qtd_resultados
+		dataType: int64
+		formatString: 0
+		lineageTag: 9d495a8c-b6fd-4cec-b77b-bb3d5e383f5d
+		summarizeBy: sum
+		sourceColumn: qtd_resultados
+
+		annotation SummarizationSetBy = Automatic
+
+	column data_anonimizacao
+		dataType: dateTime
+		formatString: General Date
+		lineageTag: 1761f17a-5f9d-47d2-8864-b444f279531f
+		summarizeBy: none
+		sourceColumn: data_anonimizacao
+
+		variation Variation
+			isDefault
+			relationship: 496b4d41-ccbc-412b-a183-3830c397b9b1
+			defaultHierarchy: LocalDateTable_faf484af-e7cf-40cb-b1f5-0d4bbaabdec4.'Hierarquia de datas'
+
+		annotation SummarizationSetBy = Automatic
+
+	partition pesquisa = m
+		mode: import
+		source =
+				let
+				    Fonte = MySQL.Database("localhost:3306", "ppgcd_artflix_random", [ReturnSingleDatabase=true]),
+				    ppgcd_artflix_random_pesquisa = Fonte{[Schema="ppgcd_artflix_random",Item="pesquisa"]}[Data]
+				in
+				    ppgcd_artflix_random_pesquisa
+

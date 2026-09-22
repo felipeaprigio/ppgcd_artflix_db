@@ -1,0 +1,39 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.12.0/schema.json",
+  "name": "15db93135f3146e9b4da",
+  "position": {
+    "x": 1058,
+    "y": 384,
+    "z": 1004,
+    "height": 154,
+    "width": 431,
+    "tabOrder": 1004
+  },
+  "visual": {
+    "visualType": "card",
+    "query": {
+      "queryState": {
+        "Values": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Medidas"
+                    }
+                  },
+                  "Property": "Violações de classificação"
+                }
+              },
+              "queryRef": "_Medidas.Violações de classificação",
+              "nativeQueryRef": "Violações de classificação",
+              "displayName": "VIOLAÇÕES DE CLASSIFICAÇÃO"
+            }
+          ]
+        }
+      }
+    },
+    "drillFilterOtherVisuals": true
+  }
+}

@@ -1,0 +1,52 @@
+table historico
+	lineageTag: a609e0fa-d0f8-47a6-aa17-2099d972e4a1
+
+	column cod_assinatura
+		dataType: int64
+		formatString: 0
+		lineageTag: b23eb64c-bda5-4b6d-89d6-7d3bb52bcb8a
+		summarizeBy: none
+		sourceColumn: cod_assinatura
+
+		annotation SummarizationSetBy = Automatic
+
+	column data_hora_status
+		dataType: dateTime
+		formatString: General Date
+		lineageTag: 5989c165-8042-48f4-b723-754df1bdbaf0
+		summarizeBy: none
+		sourceColumn: data_hora_status
+
+		variation Variation
+			isDefault
+			relationship: 5535dae1-7b7a-4e42-a248-84117ec2721d
+			defaultHierarchy: LocalDateTable_5a683e2e-2f87-42c9-8248-640e7b3461d2.'Hierarquia de datas'
+
+		annotation SummarizationSetBy = Automatic
+
+	column cod_status
+		dataType: int64
+		formatString: 0
+		lineageTag: 5ae6181d-ac6f-408d-a0d6-3a8274e77741
+		summarizeBy: sum
+		sourceColumn: cod_status
+
+		annotation SummarizationSetBy = Automatic
+
+	column motivo
+		dataType: string
+		lineageTag: 99a11e41-06ec-482c-ac1c-6fbe509747bf
+		summarizeBy: none
+		sourceColumn: motivo
+
+		annotation SummarizationSetBy = Automatic
+
+	partition historico = m
+		mode: import
+		source =
+				let
+				    Fonte = MySQL.Database("localhost:3306", "ppgcd_artflix_random", [ReturnSingleDatabase=true]),
+				    ppgcd_artflix_random_historico = Fonte{[Schema="ppgcd_artflix_random",Item="historico"]}[Data]
+				in
+				    ppgcd_artflix_random_historico
+

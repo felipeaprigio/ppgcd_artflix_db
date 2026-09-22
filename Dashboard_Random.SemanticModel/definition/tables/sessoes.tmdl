@@ -1,0 +1,166 @@
+table sessoes
+	lineageTag: 4763b8a8-8ccb-45a9-a60a-2ed4b766b3ba
+
+	column cod_sessao
+		dataType: int64
+		formatString: 0
+		lineageTag: 32f11a45-b523-4e4d-9dc0-1512a1cdd0ea
+		summarizeBy: sum
+		sourceColumn: cod_sessao
+
+		annotation SummarizationSetBy = Automatic
+
+	column cod_perfil
+		dataType: int64
+		formatString: 0
+		lineageTag: ddd63896-3124-4f2e-9931-830492466165
+		summarizeBy: none
+		sourceColumn: cod_perfil
+
+		annotation SummarizationSetBy = Automatic
+
+	column cod_titulo
+		dataType: int64
+		formatString: 0
+		lineageTag: 85cf72c0-c4dd-49a6-a388-57b06b1e8e9c
+		summarizeBy: none
+		sourceColumn: cod_titulo
+
+		annotation SummarizationSetBy = Automatic
+
+	column cod_dispositivo
+		dataType: int64
+		formatString: 0
+		lineageTag: 6fda3a9b-9227-4de2-8546-9fef6ec42541
+		summarizeBy: none
+		sourceColumn: cod_dispositivo
+
+		annotation SummarizationSetBy = Automatic
+
+	column cod_pais
+		dataType: int64
+		formatString: 0
+		lineageTag: 1225fa9d-5a6a-4d76-b486-ab0c510a296c
+		summarizeBy: sum
+		sourceColumn: cod_pais
+
+		annotation SummarizationSetBy = Automatic
+
+	column cod_janela
+		dataType: int64
+		formatString: 0
+		lineageTag: 2b658e0f-ebbf-4e7a-9374-8b2bdf455297
+		summarizeBy: sum
+		sourceColumn: cod_janela
+
+		annotation SummarizationSetBy = Automatic
+
+	column data_hora_inicio
+		dataType: dateTime
+		formatString: General Date
+		lineageTag: 78e67df6-2228-4aec-8022-77ad418c7e24
+		summarizeBy: none
+		sourceColumn: data_hora_inicio
+
+		variation Variation
+			isDefault
+			relationship: bd37e89f-78e8-49c2-b1f6-c477bcdd01e8
+			defaultHierarchy: LocalDateTable_6c7b4799-040c-4d34-a61d-d6831bbd63b1.'Hierarquia de datas'
+
+		annotation SummarizationSetBy = Automatic
+
+	column segundos_assistidos
+		dataType: int64
+		formatString: 0
+		lineageTag: 2459b702-1e11-42ec-8e70-2726c73dfbf1
+		summarizeBy: sum
+		sourceColumn: segundos_assistidos
+
+		annotation SummarizationSetBy = Automatic
+
+	column endereco_ip
+		dataType: string
+		lineageTag: f01f4359-7da8-4db3-ab09-3002c73758f2
+		summarizeBy: none
+		sourceColumn: endereco_ip
+
+		annotation SummarizationSetBy = Automatic
+
+	column data_anonimizacao
+		dataType: dateTime
+		formatString: General Date
+		lineageTag: 13908aeb-9570-4d31-9815-6a32f655d643
+		summarizeBy: none
+		sourceColumn: data_anonimizacao
+
+		variation Variation
+			isDefault
+			relationship: 6a3c93be-cde3-4858-9191-9c04a26bcf58
+			defaultHierarchy: LocalDateTable_5e87459d-45ff-4f28-9c52-50f8e00e2cc4.'Hierarquia de datas'
+
+		annotation SummarizationSetBy = Automatic
+
+	column Data = DATE ( YEAR ( sessoes[data_hora_inicio] ), MONTH ( sessoes[data_hora_inicio] ), DAY ( sessoes[data_hora_inicio] ) )
+		formatString: dd/mm/yyyy
+		lineageTag: 0649e8ef-5e5a-4b23-a56c-b3d430356f7b
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isDateTimeCustom":true}
+
+	column Hora = HOUR ( sessoes[data_hora_inicio] )
+		formatString: 0
+		lineageTag: 2a7ed489-91e6-4856-8b7e-e30cecf5cbb5
+		summarizeBy: sum
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'País da sessão' = LOOKUPVALUE ( pais[País], pais[cod_pais], sessoes[cod_pais] )
+		lineageTag: 0d8a1239-30a3-47c9-b678-39dac7c52d89
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Janela início' = LOOKUPVALUE ( janela[data_inicio], janela[cod_janela], sessoes[cod_janela] )
+		formatString: dd/mm/yyyy
+		lineageTag: 77ddca48-46e5-408e-bf66-ff55a0241884
+		summarizeBy: none
+
+		variation Variation
+			isDefault
+			relationship: 5c9cdcad-e072-45b1-9832-c7759aec4333
+			defaultHierarchy: LocalDateTable_420df278-38b1-4165-91ab-9dbb984c5f1f.'Hierarquia de datas'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isDateTimeCustom":true}
+
+	column 'Janela fim' = LOOKUPVALUE ( janela[data_fim], janela[cod_janela], sessoes[cod_janela] )
+		formatString: dd/mm/yyyy
+		lineageTag: 3b3f3c8c-c5bc-4fa4-99a2-9d521081700e
+		summarizeBy: none
+
+		variation Variation
+			isDefault
+			relationship: ff966a80-a1da-4830-ae3b-283a0f780abe
+			defaultHierarchy: LocalDateTable_7d937a1a-7bd5-4487-a3fc-ec09eff609b6.'Hierarquia de datas'
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Fora da janela' = IF ( sessoes[Data] < sessoes[Janela início] || sessoes[Data] > sessoes[Janela fim], 1, 0 )
+		formatString: 0
+		lineageTag: 3e74dde5-ad3f-41f6-93c3-f9f65567223b
+		summarizeBy: sum
+
+		annotation SummarizationSetBy = Automatic
+
+	partition sessoes = m
+		mode: import
+		source =
+				let
+				    Fonte = MySQL.Database("localhost:3306", "ppgcd_artflix_random", [ReturnSingleDatabase=true]),
+				    ppgcd_artflix_random_sessoes = Fonte{[Schema="ppgcd_artflix_random",Item="sessoes"]}[Data]
+				in
+				    ppgcd_artflix_random_sessoes
+

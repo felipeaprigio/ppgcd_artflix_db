@@ -1,0 +1,167 @@
+table janela
+	lineageTag: d01faa40-dcc3-4eca-8469-46cce3fa836e
+
+	column cod_janela
+		dataType: int64
+		formatString: 0
+		lineageTag: 0f30ab32-ab04-4ec7-b349-92cbb2e67252
+		summarizeBy: sum
+		sourceColumn: cod_janela
+
+		annotation SummarizationSetBy = Automatic
+
+	column cod_contrato
+		dataType: int64
+		formatString: 0
+		lineageTag: 0d0cac42-e0a7-4941-917a-297e9e3b9cdc
+		summarizeBy: none
+		sourceColumn: cod_contrato
+
+		annotation SummarizationSetBy = Automatic
+
+	column cod_titulo
+		dataType: int64
+		formatString: 0
+		lineageTag: 58267117-0369-4547-a946-6e597bf57426
+		summarizeBy: none
+		sourceColumn: cod_titulo
+
+		annotation SummarizationSetBy = Automatic
+
+	column cod_pais
+		dataType: int64
+		formatString: 0
+		lineageTag: 0732aebf-38ad-4c01-85b4-a7c543e5233f
+		summarizeBy: sum
+		sourceColumn: cod_pais
+
+		annotation SummarizationSetBy = Automatic
+
+	column data_inicio
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: b1973e4e-1a0e-48c2-9301-95c0a7a6e789
+		summarizeBy: none
+		sourceColumn: data_inicio
+
+		variation Variation
+			isDefault
+			relationship: 7688ac58-2c54-44e5-b550-95cf1495e205
+			defaultHierarchy: LocalDateTable_7207f18b-e6ca-4883-8cd0-495a8f847a3c.'Hierarquia de datas'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column data_fim
+		dataType: dateTime
+		formatString: dd/mm/yyyy
+		lineageTag: c4d8ed6f-7123-4164-a07b-bd27b925e0a6
+		summarizeBy: none
+		sourceColumn: data_fim
+
+		variation Variation
+			isDefault
+			relationship: 0544155a-9162-4abc-9bd8-c2724dd959c4
+			defaultHierarchy: LocalDateTable_170ec4f2-78dd-4c2f-a04a-912ac855ac0c.'Hierarquia de datas'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column indicador_exclusividade
+		dataType: boolean
+		formatString: """TRUE"";""TRUE"";""FALSE"""
+		lineageTag: 82eb1e7b-e0d5-43cf-bd5d-b872c2350049
+		summarizeBy: none
+		sourceColumn: indicador_exclusividade
+
+		annotation SummarizationSetBy = Automatic
+
+	column valor_licenca
+		dataType: double
+		lineageTag: 5bd8ef24-9251-4a3d-9d87-29ef203ec453
+		summarizeBy: sum
+		sourceColumn: valor_licenca
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column moeda
+		dataType: string
+		lineageTag: 7e22b81b-8be1-4031-a69f-c290f8b0e110
+		summarizeBy: none
+		sourceColumn: moeda
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'País da licença' = LOOKUPVALUE ( pais[País], pais[cod_pais], janela[cod_pais] )
+		lineageTag: 2d2560ab-f41e-4475-86c7-4cb3da59e36c
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Dias restantes' = INT ( janela[data_fim] - DATE ( 2026, 9, 1 ) )
+		formatString: 0
+		lineageTag: 5b739c81-154d-4e6f-8a7c-dbcbeffb088b
+		summarizeBy: sum
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Sessões na janela' = LOOKUPVALUE ( 'Uso das janelas'[Qtd sessões], 'Uso das janelas'[Janela], janela[cod_janela] ) + 0
+		formatString: 0
+		lineageTag: b6badf8b-deea-4aa1-a79c-efbe1fbc2fcd
+		summarizeBy: sum
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Valor licença (US$)' = janela[valor_licenca] / LOOKUPVALUE ( cotacao[taxa_usd], cotacao[moeda], COALESCE ( janela[moeda], "BRL" ), cotacao[competencia], FORMAT ( MAX ( MIN ( janela[data_inicio], DATE ( 2026, 9, 1 ) ), DATE ( 2023, 1, 1 ) ), "yyyy-MM" ) )
+		formatString: "US$"\ #,0.00;-"US$"\ #,0.00;"US$"\ #,0.00
+		lineageTag: d8a51e78-56bf-4d93-9b7c-804ceb6cb959
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Exibições fora' = LOOKUPVALUE ( 'Uso das janelas'[Qtd fora da janela], 'Uso das janelas'[Janela], janela[cod_janela] ) + 0
+		formatString: 0
+		lineageTag: 2e00c536-c7a8-4598-ab86-3cef4c0473fc
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Último dia no ar' = LOOKUPVALUE ( 'Uso das janelas'[Último dia fora], 'Uso das janelas'[Janela], janela[cod_janela] )
+		formatString: dd/mm/yyyy
+		lineageTag: ca842b65-9e29-4648-90bb-02ec7fc48800
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Dias no ar após vencer' = IF ( NOT ISBLANK ( janela[Último dia no ar] ), INT ( janela[Último dia no ar] - janela[data_fim] ) )
+		formatString: 0
+		lineageTag: fa04cb43-bfef-42e5-9306-e29ffbd6fdc6
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Causa do incidente' = IF ( janela[Exibições fora] > 0, "Venceu em " & FORMAT ( janela[data_fim], "dd/mm/yyyy" ) & "; ficou mais " & janela[Dias no ar após vencer] & " dias no ar" )
+		lineageTag: 710cc164-7890-40a5-9244-c29ad28bfb9b
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	column Distribuidor = RELATED ( fornecedor[nome_fantasia] )
+		lineageTag: 7ca9235f-1640-4b4c-8774-f73f49f12b97
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	partition janela = m
+		mode: import
+		source =
+				let
+				    Fonte = MySQL.Database("localhost:3306", "ppgcd_artflix_random", [ReturnSingleDatabase=true]),
+				    ppgcd_artflix_random_janela = Fonte{[Schema="ppgcd_artflix_random",Item="janela"]}[Data]
+				in
+				    ppgcd_artflix_random_janela
+

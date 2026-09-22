@@ -1,0 +1,55 @@
+table 'Uso das janelas'
+	isHidden
+	lineageTag: f8ac0416-d1f1-4add-8100-4bbd725224cb
+
+	column Janela
+		isHidden
+		formatString: 0
+		lineageTag: 801883c5-c2dd-4f5b-ba34-8aaa89692d41
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [Janela]
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Qtd sessões'
+		isHidden
+		formatString: 0
+		lineageTag: f4aa4abc-cf51-45d5-b4b0-2181087a365f
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [Qtd sessões]
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Qtd fora da janela'
+		isHidden
+		formatString: 0
+		lineageTag: 4f5531ce-7104-4c99-8a6d-25bdf9383444
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [Qtd fora da janela]
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Último dia fora'
+		isHidden
+		formatString: dd/mm/yyyy
+		lineageTag: db1ed54b-e9b4-4c75-885d-a76adc6fb8af
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [Último dia fora]
+
+		annotation SummarizationSetBy = Automatic
+
+	partition 'Uso das janelas' = calculated
+		mode: import
+		source =
+				SELECTCOLUMNS (
+				    SUMMARIZE ( sessoes, sessoes[cod_janela] ),
+				    "Janela", sessoes[cod_janela],
+				    "Qtd sessões", CALCULATE ( COUNTROWS ( sessoes ) ),
+				    "Qtd fora da janela", CALCULATE ( SUM ( sessoes[Fora da janela] ) ),
+				    "Último dia fora", CALCULATE ( MAX ( sessoes[Data] ), sessoes[Fora da janela] = 1 )
+				)
+

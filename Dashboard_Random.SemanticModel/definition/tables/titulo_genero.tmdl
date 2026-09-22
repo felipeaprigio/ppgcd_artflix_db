@@ -1,0 +1,32 @@
+table titulo_genero
+	lineageTag: 44ff499e-0ad2-4afb-b129-4ade2f264994
+
+	column cod_titulo
+		dataType: int64
+		formatString: 0
+		lineageTag: 24fb030a-cda4-4a54-a712-c2078102a564
+		summarizeBy: none
+		sourceColumn: cod_titulo
+
+		annotation SummarizationSetBy = Automatic
+
+	column cod_genero
+		dataType: int64
+		formatString: 0
+		lineageTag: b0816ab6-df34-47e9-80af-d18bbface12e
+		summarizeBy: none
+		sourceColumn: cod_genero
+
+		annotation SummarizationSetBy = Automatic
+
+	partition titulo_genero = m
+		mode: import
+		source =
+				let
+				    Fonte = MySQL.Database("localhost:3306", "ppgcd_artflix_random", [ReturnSingleDatabase=true]),
+				    ppgcd_artflix_random_titulo_genero = Fonte{[Schema="ppgcd_artflix_random",Item="titulo_genero"]}[Data]
+				in
+				    ppgcd_artflix_random_titulo_genero
+
+	annotation PBI_ResultType = Table
+

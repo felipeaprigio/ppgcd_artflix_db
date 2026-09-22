@@ -1,0 +1,103 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/report/3.3.0/schema.json",
+  "themeCollection": {
+    "baseTheme": {
+      "name": "Fluent2-CY26SU08",
+      "reportVersionAtImport": {
+        "visual": "2.12.0",
+        "report": "3.4.0",
+        "page": "2.3.1"
+      },
+      "type": "SharedResources"
+    },
+    "customTheme": {
+      "name": "ARTFLIX_-_Streaming_Latino8294023987113485.json",
+      "reportVersionAtImport": {
+        "visual": "2.12.0",
+        "report": "3.4.0",
+        "page": "2.3.1"
+      },
+      "type": "RegisteredResources"
+    }
+  },
+  "objects": {
+    "section": [
+      {
+        "properties": {
+          "verticalAlignment": {
+            "expr": {
+              "Literal": {
+                "Value": "'Top'"
+              }
+            }
+          }
+        }
+      }
+    ],
+    "outspacePane": [
+      {
+        "properties": {
+          "expanded": {
+            "expr": {
+              "Literal": {
+                "Value": "false"
+              }
+            }
+          }
+        }
+      }
+    ]
+  },
+  "resourcePackages": [
+    {
+      "name": "SharedResources",
+      "type": "SharedResources",
+      "items": [
+        {
+          "name": "Fluent2-CY26SU08",
+          "path": "BaseThemes/Fluent2-CY26SU08.json",
+          "type": "BaseTheme"
+        }
+      ]
+    },
+    {
+      "name": "RegisteredResources",
+      "type": "RegisteredResources",
+      "items": [
+        {
+          "name": "ARTFLIX_-_Streaming_Latino8294023987113485.json",
+          "path": "ARTFLIX_-_Streaming_Latino8294023987113485.json",
+          "type": "CustomTheme"
+        },
+        {
+          "name": "Fundo_1_Visao_Executiva2687289700807699.png",
+          "path": "Fundo_1_Visao_Executiva2687289700807699.png",
+          "type": "Image"
+        },
+        {
+          "name": "Fundo_2_Audiencia39430539657307495.png",
+          "path": "Fundo_2_Audiencia39430539657307495.png",
+          "type": "Image"
+        },
+        {
+          "name": "Fundo_3_Catalogo_e_Direitos767176545030952.png",
+          "path": "Fundo_3_Catalogo_e_Direitos767176545030952.png",
+          "type": "Image"
+        },
+        {
+          "name": "Fundo_4_Qualidade_dos_Dados44791365417133366.png",
+          "path": "Fundo_4_Qualidade_dos_Dados44791365417133366.png",
+          "type": "Image"
+        }
+      ]
+    }
+  ],
+  "settings": {
+    "useStylableVisualContainerHeader": true,
+    "exportDataMode": "AllowSummarized",
+    "defaultDrillFilterOtherVisuals": true,
+    "allowChangeFilterTypes": true,
+    "useEnhancedTooltips": true,
+    "useDefaultAggregateDisplayName": true
+  }
+}

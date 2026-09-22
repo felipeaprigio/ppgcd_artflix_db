@@ -1,0 +1,53 @@
+table avaliacao
+	lineageTag: d1733a0b-e8c2-4893-88d5-063a237fe93e
+
+	column cod_perfil
+		dataType: int64
+		formatString: 0
+		lineageTag: ce96969e-a41c-4773-964d-b5410aaf7ae5
+		summarizeBy: none
+		sourceColumn: cod_perfil
+
+		annotation SummarizationSetBy = Automatic
+
+	column cod_titulo
+		dataType: int64
+		formatString: 0
+		lineageTag: 7f35d812-a000-4bde-b3c5-55cb358ebb73
+		summarizeBy: none
+		sourceColumn: cod_titulo
+
+		annotation SummarizationSetBy = Automatic
+
+	column nota
+		dataType: int64
+		formatString: 0
+		lineageTag: 113de396-d56f-4679-8b32-9329d1434dda
+		summarizeBy: sum
+		sourceColumn: nota
+
+		annotation SummarizationSetBy = Automatic
+
+	column data_hora_avaliacao
+		dataType: dateTime
+		formatString: General Date
+		lineageTag: 0703b098-122e-4f08-b55c-09457c2552ce
+		summarizeBy: none
+		sourceColumn: data_hora_avaliacao
+
+		variation Variation
+			isDefault
+			relationship: b7aa08ae-db87-4ade-8fa6-e339662ab794
+			defaultHierarchy: LocalDateTable_9034aa26-57c7-4f56-8015-4269a4476fdf.'Hierarquia de datas'
+
+		annotation SummarizationSetBy = Automatic
+
+	partition avaliacao = m
+		mode: import
+		source =
+				let
+				    Fonte = MySQL.Database("localhost:3306", "ppgcd_artflix_random", [ReturnSingleDatabase=true]),
+				    ppgcd_artflix_random_avaliacao = Fonte{[Schema="ppgcd_artflix_random",Item="avaliacao"]}[Data]
+				in
+				    ppgcd_artflix_random_avaliacao
+

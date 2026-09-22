@@ -1,0 +1,328 @@
+relationship 79e1b7e1-fe8d-4a0b-a227-cdbff215b892
+	joinOnDateBehavior: datePartOnly
+	fromColumn: assinante.data_nascimento
+	toColumn: LocalDateTable_6b8f92a3-7389-4407-92b1-1c2b78088f42.Date
+
+relationship 8e24866a-cb1f-4467-8fe4-5b86950f2723
+	joinOnDateBehavior: datePartOnly
+	fromColumn: assinante.data_cadastro
+	toColumn: LocalDateTable_92133e32-3035-429a-b7fe-736db1b74b40.Date
+
+relationship 669a74ad-f8f4-4d76-9d56-69be439f67dd
+	joinOnDateBehavior: datePartOnly
+	fromColumn: assinante.data_solicitacao_exclusao
+	toColumn: LocalDateTable_087d8222-d7ad-49ec-9062-3d3b73eafaec.Date
+
+relationship 956c26f5-acc6-4bae-847b-60a296d31e96
+	joinOnDateBehavior: datePartOnly
+	fromColumn: assinante.data_anonimizacao
+	toColumn: LocalDateTable_d97d71f0-4f2e-4433-a1d8-6eda117ceb94.Date
+
+relationship 38354ef6-740a-4713-a8a3-291b89a823d0
+	joinOnDateBehavior: datePartOnly
+	fromColumn: assinatura.data_inicio
+	toColumn: LocalDateTable_684def72-fac7-4a63-886f-91c4f9394742.Date
+
+relationship b8bcba6b-8492-459e-932e-6b93453d3ea4
+	joinOnDateBehavior: datePartOnly
+	fromColumn: assinatura.data_cancelamento
+	toColumn: LocalDateTable_b348c280-cfbb-4b4a-b827-3ef02187d14c.Date
+
+relationship 67e3b651-91d4-438c-930e-f6bddc4b6766
+	joinOnDateBehavior: datePartOnly
+	fromColumn: assinatura.data_fim_acesso
+	toColumn: LocalDateTable_a73d49a7-5a43-483b-bd95-b536144633a2.Date
+
+relationship b7aa08ae-db87-4ade-8fa6-e339662ab794
+	joinOnDateBehavior: datePartOnly
+	fromColumn: avaliacao.data_hora_avaliacao
+	toColumn: LocalDateTable_9034aa26-57c7-4f56-8015-4269a4476fdf.Date
+
+relationship ac364400-7033-44fc-8c34-e96828cd71d2
+	joinOnDateBehavior: datePartOnly
+	fromColumn: contrato.data_assinatura
+	toColumn: LocalDateTable_73a1021a-568c-4c6e-b2f6-ae215252c565.Date
+
+relationship 292b8cdf-8055-4a74-83c6-cfacfa3678d7
+	joinOnDateBehavior: datePartOnly
+	fromColumn: contrato.data_inicio_vigencia
+	toColumn: LocalDateTable_a0803a8d-44fb-413c-969e-128fc0a19b4b.Date
+
+relationship 4576e0b6-8370-4618-aca9-2c3c5fcec5e6
+	joinOnDateBehavior: datePartOnly
+	fromColumn: contrato.data_fim_vigencia
+	toColumn: LocalDateTable_d3633b61-f2fd-4fcd-a198-8cc356cd94f6.Date
+
+relationship 47b04cad-a57d-47fb-9339-3656ff7d19a8
+	joinOnDateBehavior: datePartOnly
+	fromColumn: cobranca.data_vencimento
+	toColumn: LocalDateTable_e528b52b-5968-4ce6-828e-db30ef2361d5.Date
+
+relationship 9b4dc0be-21ce-4855-884d-6a706f3cf2f2
+	joinOnDateBehavior: datePartOnly
+	fromColumn: cobranca.data_consulta
+	toColumn: LocalDateTable_d5e4aa1d-e849-45db-a013-518544ff08f8.Date
+
+relationship 5535dae1-7b7a-4e42-a248-84117ec2721d
+	joinOnDateBehavior: datePartOnly
+	fromColumn: historico.data_hora_status
+	toColumn: LocalDateTable_5a683e2e-2f87-42c9-8248-640e7b3461d2.Date
+
+relationship 7688ac58-2c54-44e5-b550-95cf1495e205
+	joinOnDateBehavior: datePartOnly
+	fromColumn: janela.data_inicio
+	toColumn: LocalDateTable_7207f18b-e6ca-4883-8cd0-495a8f847a3c.Date
+
+relationship 0544155a-9162-4abc-9bd8-c2724dd959c4
+	joinOnDateBehavior: datePartOnly
+	fromColumn: janela.data_fim
+	toColumn: LocalDateTable_170ec4f2-78dd-4c2f-a04a-912ac855ac0c.Date
+
+relationship 5b96d145-15ff-4152-b132-6226ad7ebb1d
+	joinOnDateBehavior: datePartOnly
+	fromColumn: login.data_hora_login
+	toColumn: LocalDateTable_bad8b44d-d850-4bf9-ab54-63111a832d3a.Date
+
+relationship 5a1858ce-bb33-47aa-8e6f-d7c2dd682b4c
+	joinOnDateBehavior: datePartOnly
+	fromColumn: login.data_anonimizacao
+	toColumn: LocalDateTable_d2d99e69-f871-4e63-8524-6c3cedccab1b.Date
+
+relationship 5d1a5933-1d88-42d7-88f7-fe731a1cd1fb
+	joinOnDateBehavior: datePartOnly
+	fromColumn: perfil.data_nascimento
+	toColumn: LocalDateTable_27e67ac1-d65a-4e9b-9bd4-5d029dcec3cd.Date
+
+relationship f9703253-9787-40e6-8994-16f87aed5232
+	joinOnDateBehavior: datePartOnly
+	fromColumn: perfil.data_criacao
+	toColumn: LocalDateTable_55008e82-b3dc-4b00-9c00-d7bab10bdc0e.Date
+
+relationship 58053f6a-efba-417f-99f3-1b460114e1e7
+	joinOnDateBehavior: datePartOnly
+	fromColumn: pesquisa.data_hora_pesquisa
+	toColumn: LocalDateTable_f1a41ee8-03ae-4964-8028-434e333797f4.Date
+
+relationship 496b4d41-ccbc-412b-a183-3830c397b9b1
+	joinOnDateBehavior: datePartOnly
+	fromColumn: pesquisa.data_anonimizacao
+	toColumn: LocalDateTable_faf484af-e7cf-40cb-b1f5-0d4bbaabdec4.Date
+
+relationship bd37e89f-78e8-49c2-b1f6-c477bcdd01e8
+	joinOnDateBehavior: datePartOnly
+	fromColumn: sessoes.data_hora_inicio
+	toColumn: LocalDateTable_6c7b4799-040c-4d34-a61d-d6831bbd63b1.Date
+
+relationship 6a3c93be-cde3-4858-9191-9c04a26bcf58
+	joinOnDateBehavior: datePartOnly
+	fromColumn: sessoes.data_anonimizacao
+	toColumn: LocalDateTable_5e87459d-45ff-4f28-9c52-50f8e00e2cc4.Date
+
+relationship bf447a3c-0ff1-4277-930c-f1264e95cf3d
+	fromColumn: assinante.cod_endereco
+	toColumn: endereco.cod_endereco
+
+	annotation PBI_IsFromSource = FS
+
+relationship 2a49ac45-3c78-4398-8086-c29932c57363
+	fromColumn: assinatura.cod_assinante
+	toColumn: assinante.cod_assinante
+
+	annotation PBI_IsFromSource = FS
+
+relationship 0abaae12-d80b-4f7f-b979-5088dde24429
+	fromColumn: assinatura.cod_plano
+	toColumn: plano.cod_plano
+
+	annotation PBI_IsFromSource = FS
+
+relationship ca4bc377-2c78-44b1-87c6-5e5a2e078dba
+	fromColumn: assinatura.cod_status
+	toColumn: status.cod_status
+
+	annotation PBI_IsFromSource = FS
+
+relationship 49664486-76db-4a18-b4a3-685107befa46
+	fromColumn: avaliacao.cod_perfil
+	toColumn: perfil.cod_perfil
+
+	annotation PBI_IsFromSource = FS
+
+relationship dd0dad4c-8f85-493f-ac35-005d2ff5d044
+	fromColumn: avaliacao.cod_titulo
+	toColumn: titulo.cod_titulo
+
+	annotation PBI_IsFromSource = FS
+
+relationship 3035ad56-b39b-4890-88fe-00619f804313
+	fromColumn: contrato.cod_fornecedor
+	toColumn: fornecedor.cod_fornecedor
+
+	annotation PBI_IsFromSource = FS
+
+relationship c4c38619-ae60-44fc-bed6-30a9520c20f6
+	fromColumn: cobranca.cod_assinatura
+	toColumn: assinatura.cod_assinatura
+
+	annotation PBI_IsFromSource = FS
+
+relationship f10f710f-a333-43d1-b625-81ff1042eec2
+	isActive: false
+	fromColumn: endereco.cod_pais
+	toColumn: pais.cod_pais
+
+	annotation PBI_IsFromSource = FS
+
+relationship af5f2fb2-2b15-45a1-8485-d75dc2d077f4
+	fromColumn: fornecedor.cod_endereco
+	toColumn: endereco.cod_endereco
+
+	annotation PBI_IsFromSource = FS
+
+relationship 30fbe27d-253c-435f-95dd-2bf59f028c1e
+	fromColumn: historico.cod_assinatura
+	toColumn: assinatura.cod_assinatura
+
+	annotation PBI_IsFromSource = FS
+
+relationship 102a1b10-a254-4b2b-8332-8a4572445da0
+	isActive: false
+	fromColumn: historico.cod_status
+	toColumn: status.cod_status
+
+	annotation PBI_IsFromSource = FS
+
+relationship ab9f96e7-d009-4be8-8cdd-c38a34bec37e
+	fromColumn: janela.cod_contrato
+	toColumn: contrato.cod_contrato
+
+	annotation PBI_IsFromSource = FS
+
+relationship cdf80121-31f8-4049-bcb4-33f9971fc722
+	fromColumn: janela.cod_pais
+	toColumn: pais.cod_pais
+
+	annotation PBI_IsFromSource = FS
+
+relationship 01cf2fb5-869e-4a52-9cb1-4ff00a0cadb6
+	fromColumn: janela.cod_titulo
+	toColumn: titulo.cod_titulo
+
+	annotation PBI_IsFromSource = FS
+
+relationship 2874ee65-b807-4e31-b8e4-272a3bf05d61
+	fromColumn: login.cod_dispositivo
+	toColumn: dispositivo.cod_dispositivo
+
+	annotation PBI_IsFromSource = FS
+
+relationship b2480e05-16dc-49fd-9d51-d8364d3ecd39
+	fromColumn: login.cod_perfil
+	toColumn: perfil.cod_perfil
+
+	annotation PBI_IsFromSource = FS
+
+relationship 90f8eb7a-5f63-4473-8849-93c212aa37be
+	fromColumn: perfil.cod_assinatura
+	toColumn: assinatura.cod_assinatura
+
+	annotation PBI_IsFromSource = FS
+
+relationship 8c128172-4e7a-4d94-91a9-149790e388e6
+	fromColumn: perfil.cod_classificacao
+	toColumn: classificacao.cod_classificacao
+
+	annotation PBI_IsFromSource = FS
+
+relationship 38fde410-3b64-4eca-9da9-28f7f31cfee6
+	fromColumn: pesquisa.cod_perfil
+	toColumn: perfil.cod_perfil
+
+	annotation PBI_IsFromSource = FS
+
+relationship 6c95e05c-1137-4c0d-83f6-c7f5b888a6b6
+	fromColumn: plano_pais.cod_pais
+	toColumn: pais.cod_pais
+
+	annotation PBI_IsFromSource = FS
+
+relationship 924f5d96-0ec6-420e-9fc5-34fc5ba0f310
+	fromColumn: plano_pais.cod_plano
+	toColumn: plano.cod_plano
+
+	annotation PBI_IsFromSource = FS
+
+relationship 41e7dede-3622-41ca-a390-5cb0a34f7e25
+	fromColumn: sessoes.cod_dispositivo
+	toColumn: dispositivo.cod_dispositivo
+
+	annotation PBI_IsFromSource = FS
+
+relationship 628fdcf8-fd1e-4f30-b90d-c3aa2ded4e1d
+	isActive: false
+	fromColumn: sessoes.cod_pais
+	toColumn: pais.cod_pais
+
+	annotation PBI_IsFromSource = FS
+
+relationship 4a22fb08-0a36-4db5-aaa6-eac8cad5e87e
+	fromColumn: sessoes.cod_perfil
+	toColumn: perfil.cod_perfil
+
+	annotation PBI_IsFromSource = FS
+
+relationship 87fdb3e9-3a19-44dc-80a0-c1cb32104795
+	fromColumn: sessoes.cod_titulo
+	toColumn: titulo.cod_titulo
+
+	annotation PBI_IsFromSource = FS
+
+relationship 3db3fad3-4cab-49fe-a72e-d01a8ba6e81d
+	isActive: false
+	fromColumn: titulo.cod_classificacao
+	toColumn: classificacao.cod_classificacao
+
+	annotation PBI_IsFromSource = FS
+
+relationship 42fb7be5-7ed0-4ef0-b515-b7d1967c5ae7
+	isActive: false
+	fromColumn: titulo.pais_origem
+	toColumn: pais.cod_pais
+
+	annotation PBI_IsFromSource = FS
+
+relationship a8222d6e-cf6d-4e23-bdd7-b2ede4c2ea05
+	fromColumn: titulo_genero.cod_genero
+	toColumn: genero.cod_genero
+
+	annotation PBI_IsFromSource = FS
+
+relationship 56490b10-163e-4aa2-b97d-78f45c82aff3
+	fromColumn: titulo_genero.cod_titulo
+	toColumn: titulo.cod_titulo
+
+	annotation PBI_IsFromSource = FS
+
+relationship ffb2397c-a729-445b-a5ed-c6b471075062
+	joinOnDateBehavior: datePartOnly
+	fromColumn: Calendario.Data
+	toColumn: LocalDateTable_ea165779-9290-4fc5-9058-947f2388cf76.Date
+
+relationship 5c9cdcad-e072-45b1-9832-c7759aec4333
+	joinOnDateBehavior: datePartOnly
+	fromColumn: sessoes.'Janela início'
+	toColumn: LocalDateTable_420df278-38b1-4165-91ab-9dbb984c5f1f.Date
+
+relationship ff966a80-a1da-4830-ae3b-283a0f780abe
+	joinOnDateBehavior: datePartOnly
+	fromColumn: sessoes.'Janela fim'
+	toColumn: LocalDateTable_7d937a1a-7bd5-4487-a3fc-ec09eff609b6.Date
+
+relationship e5659239-e45f-8ec4-5112-417a8b75f3ff
+	fromColumn: sessoes.Data
+	toColumn: Calendario.Data
+
+relationship d05bcb8c-4af8-4a78-a40e-2ac057103d67
+	fromColumn: assinatura.cod_pais
+	toColumn: pais.cod_pais
+

@@ -1,0 +1,46 @@
+table cotacao
+	lineageTag: 9029c6fe-7367-493b-9396-8b00e18e8768
+
+	column moeda
+		dataType: string
+		lineageTag: 6ad4a65c-970a-4ea9-8949-b72932388e5d
+		summarizeBy: none
+		sourceColumn: moeda
+
+		annotation SummarizationSetBy = Automatic
+
+	column competencia
+		dataType: string
+		lineageTag: 9ff14753-0055-4305-a3c8-69ac418e5675
+		summarizeBy: none
+		sourceColumn: competencia
+
+		annotation SummarizationSetBy = Automatic
+
+	column taxa_usd
+		dataType: double
+		lineageTag: 1a475f3f-567a-4299-864f-bc6457d1b109
+		summarizeBy: none
+		sourceColumn: taxa_usd
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column fonte
+		dataType: string
+		lineageTag: 07d3bbcb-78d1-4bda-984b-2a838adf06c8
+		summarizeBy: none
+		sourceColumn: fonte
+
+		annotation SummarizationSetBy = Automatic
+
+	partition cotacao = m
+		mode: import
+		source =
+				let
+				    Fonte = MySQL.Database("localhost:3306", "ppgcd_artflix_random", [ReturnSingleDatabase=true]),
+				    ppgcd_artflix_random_cotacao = Fonte{[Schema="ppgcd_artflix_random",Item="cotacao"]}[Data]
+				in
+				    ppgcd_artflix_random_cotacao
+

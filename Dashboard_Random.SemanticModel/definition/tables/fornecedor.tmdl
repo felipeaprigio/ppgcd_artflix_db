@@ -1,0 +1,70 @@
+table fornecedor
+	lineageTag: 796cc361-c251-4fd6-bbc8-3ddeb4885b91
+
+	column cod_fornecedor
+		dataType: int64
+		formatString: 0
+		lineageTag: 28ec5095-e4fa-4301-bb79-5994aff2122b
+		summarizeBy: none
+		sourceColumn: cod_fornecedor
+
+		annotation SummarizationSetBy = Automatic
+
+	column razao_social
+		dataType: string
+		lineageTag: c3e8f2c3-edab-418c-b907-2e46e761afc2
+		summarizeBy: none
+		sourceColumn: razao_social
+
+		annotation SummarizationSetBy = Automatic
+
+	column nome_fantasia
+		dataType: string
+		lineageTag: 5711a025-ea7a-49d2-9403-503aa039bd16
+		summarizeBy: none
+		sourceColumn: nome_fantasia
+
+		annotation SummarizationSetBy = Automatic
+
+	column documento_fiscal
+		dataType: string
+		lineageTag: 7f2285c2-9043-41ef-9915-19227bb2dbe8
+		summarizeBy: none
+		sourceColumn: documento_fiscal
+
+		annotation SummarizationSetBy = Automatic
+
+	column email_contato
+		dataType: string
+		lineageTag: 4e5f6a70-542c-4b3a-8738-c2acb3fe1111
+		summarizeBy: none
+		sourceColumn: email_contato
+
+		annotation SummarizationSetBy = Automatic
+
+	column telefone_contato
+		dataType: string
+		lineageTag: d4a76309-6a85-4399-bc51-d1740ab5a5ec
+		summarizeBy: none
+		sourceColumn: telefone_contato
+
+		annotation SummarizationSetBy = Automatic
+
+	column cod_endereco
+		dataType: int64
+		formatString: 0
+		lineageTag: ff5566c3-3e98-4d7f-a3f3-01b2c7c90b76
+		summarizeBy: none
+		sourceColumn: cod_endereco
+
+		annotation SummarizationSetBy = Automatic
+
+	partition fornecedor = m
+		mode: import
+		source =
+				let
+				    Fonte = MySQL.Database("localhost:3306", "ppgcd_artflix_random", [ReturnSingleDatabase=true]),
+				    ppgcd_artflix_random_fornecedor = Fonte{[Schema="ppgcd_artflix_random",Item="fornecedor"]}[Data]
+				in
+				    ppgcd_artflix_random_fornecedor
+

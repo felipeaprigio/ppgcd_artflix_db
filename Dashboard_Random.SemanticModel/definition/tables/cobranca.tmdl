@@ -1,0 +1,85 @@
+table cobranca
+	lineageTag: 2e6b345c-89b4-417a-b439-73b59655cf48
+
+	column cod_assinatura
+		dataType: int64
+		formatString: 0
+		lineageTag: 658a58f7-029d-4645-8fa2-e9a5aa83c61c
+		summarizeBy: none
+		sourceColumn: cod_assinatura
+
+		annotation SummarizationSetBy = Automatic
+
+	column competencia
+		dataType: string
+		lineageTag: e736382c-039f-4ee3-9cf5-a60fce74defd
+		summarizeBy: none
+		sourceColumn: competencia
+
+		annotation SummarizationSetBy = Automatic
+
+	column valor_cobrado
+		dataType: double
+		lineageTag: b9f23ec1-c831-4b75-8cd1-db1cdc773b05
+		summarizeBy: sum
+		sourceColumn: valor_cobrado
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column moeda
+		dataType: string
+		lineageTag: 1ee1c99d-860f-41de-bf25-97f718a7294c
+		summarizeBy: none
+		sourceColumn: moeda
+
+		annotation SummarizationSetBy = Automatic
+
+	column data_vencimento
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: 37dd3251-68e7-42d9-87cb-a93972d4e270
+		summarizeBy: none
+		sourceColumn: data_vencimento
+
+		variation Variation
+			isDefault
+			relationship: 47b04cad-a57d-47fb-9339-3656ff7d19a8
+			defaultHierarchy: LocalDateTable_e528b52b-5968-4ce6-828e-db30ef2361d5.'Hierarquia de datas'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column situacao_pagamento
+		dataType: string
+		lineageTag: 64f39b45-b9c0-41e5-9e20-3a4e2efbd9c8
+		summarizeBy: none
+		sourceColumn: situacao_pagamento
+
+		annotation SummarizationSetBy = Automatic
+
+	column data_consulta
+		dataType: dateTime
+		formatString: General Date
+		lineageTag: 10f3a38a-06f7-4d8c-950d-048953ecc39b
+		summarizeBy: none
+		sourceColumn: data_consulta
+
+		variation Variation
+			isDefault
+			relationship: 9b4dc0be-21ce-4855-884d-6a706f3cf2f2
+			defaultHierarchy: LocalDateTable_d5e4aa1d-e849-45db-a013-518544ff08f8.'Hierarquia de datas'
+
+		annotation SummarizationSetBy = Automatic
+
+	partition cobranca = m
+		mode: import
+		source =
+				let
+				    Fonte = MySQL.Database("localhost:3306", "ppgcd_artflix_random", [ReturnSingleDatabase=true]),
+				    ppgcd_artflix_random_cobranca = Fonte{[Schema="ppgcd_artflix_random",Item="cobranca"]}[Data]
+				in
+				    ppgcd_artflix_random_cobranca
+

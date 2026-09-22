@@ -1,0 +1,39 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.12.0/schema.json",
+  "name": "c1495aef7bf14595a94f",
+  "position": {
+    "x": 1058,
+    "y": 384,
+    "z": 1004,
+    "height": 154,
+    "width": 431,
+    "tabOrder": 1004
+  },
+  "visual": {
+    "visualType": "card",
+    "query": {
+      "queryState": {
+        "Values": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Medidas"
+                    }
+                  },
+                  "Property": "Churn mensal %"
+                }
+              },
+              "queryRef": "_Medidas.Churn mensal %",
+              "nativeQueryRef": "Churn mensal %",
+              "displayName": "CHURN MENSAL"
+            }
+          ]
+        }
+      }
+    },
+    "drillFilterOtherVisuals": true
+  }
+}

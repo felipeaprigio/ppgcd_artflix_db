@@ -1,0 +1,39 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.12.0/schema.json",
+  "name": "2090c15fb3584ab593de",
+  "position": {
+    "x": 559,
+    "y": 384,
+    "z": 1003,
+    "height": 154,
+    "width": 431,
+    "tabOrder": 1003
+  },
+  "visual": {
+    "visualType": "card",
+    "query": {
+      "queryState": {
+        "Values": {
+          "projections": [
+            {
+              "field": {
+                "Measure": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "_Medidas"
+                    }
+                  },
+                  "Property": "Registros órfãos"
+                }
+              },
+              "queryRef": "_Medidas.Registros órfãos",
+              "nativeQueryRef": "Registros órfãos",
+              "displayName": "REGISTROS ÓRFÃOS"
+            }
+          ]
+        }
+      }
+    },
+    "drillFilterOtherVisuals": true
+  }
+}

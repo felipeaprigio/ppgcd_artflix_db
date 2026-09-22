@@ -1,0 +1,46 @@
+table classificacao
+	lineageTag: 1d2b861f-b561-4845-8d07-726ffeacc797
+
+	column cod_classificacao
+		dataType: int64
+		formatString: 0
+		lineageTag: 4775daf5-a84f-4f15-8cf8-e2238c3a1f1b
+		summarizeBy: none
+		sourceColumn: cod_classificacao
+
+		annotation SummarizationSetBy = Automatic
+
+	column sigla
+		dataType: string
+		lineageTag: 56a0d35d-a20d-45e8-9b04-19d692feea78
+		summarizeBy: none
+		sourceColumn: sigla
+
+		annotation SummarizationSetBy = Automatic
+
+	column idade_minima
+		dataType: int64
+		formatString: 0
+		lineageTag: b72a6d12-49bd-4a3b-82a4-473d3320740d
+		summarizeBy: none
+		sourceColumn: idade_minima
+
+		annotation SummarizationSetBy = Automatic
+
+	column descricao
+		dataType: string
+		lineageTag: 2c534b2b-06d8-45f8-b1ad-653758ce118d
+		summarizeBy: none
+		sourceColumn: descricao
+
+		annotation SummarizationSetBy = Automatic
+
+	partition classificacao = m
+		mode: import
+		source =
+				let
+				    Fonte = MySQL.Database("localhost:3306", "ppgcd_artflix_random", [ReturnSingleDatabase=true]),
+				    ppgcd_artflix_random_classificacao = Fonte{[Schema="ppgcd_artflix_random",Item="classificacao"]}[Data]
+				in
+				    ppgcd_artflix_random_classificacao
+
